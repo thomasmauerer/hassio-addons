@@ -3,9 +3,11 @@ FROM $BUILD_FROM
 
 ENV LANG C.UTF-8
 
-# Install ha command line tool
+# Home Assistant CLI
 ARG BUILD_ARCH
-RUN curl -Lso /usr/bin/ha https://github.com/home-assistant/cli/releases/download/4.3.0/ha_${BUILD_ARCH} \
+ARG CLI_VERSION
+RUN curl -Lso /usr/bin/ha \
+        "https://github.com/home-assistant/cli/releases/download/${CLI_VERSION}/ha_${BUILD_ARCH}" \
     && chmod a+x /usr/bin/ha
 
 # Copy data
