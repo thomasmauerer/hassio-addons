@@ -3,6 +3,7 @@
   "version": "0.2",
   "slug": "ha_samba_backup",
   "description": "Create snapshots and store them on a Samba share",
+  "url": "https://github.com/thomasmauerer/hassio-addons/tree/master/ha-samba-backup",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
   "startup": "once",
   "boot": "manual",
