@@ -1,6 +1,6 @@
 {
-  "name": "Home Assistant Samba Backup",
-  "version": "0.1",
+  "name": "Samba Backup",
+  "version": "0.2",
   "slug": "ha_samba_backup",
   "description": "Create snapshots and store them on a Samba share",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
@@ -9,6 +9,7 @@
   "hassio_api": true,
   "hassio_role": "backup",
   "map": ["backup:rw"],
+  "image": "thomasmauerer/ha-samba-backup-{arch}",
   "options": {
     "host": null,
     "share": null
