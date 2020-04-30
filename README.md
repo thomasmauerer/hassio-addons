@@ -1,2 +1,2 @@
-# hassio-addons
-My collection of addons for Home Assistant
+# My Home Assistant Addons 
+Details will follow
