@@ -12,10 +12,16 @@
   "image": "thomasmauerer/ha-samba-backup-{arch}",
   "options": {
     "host": null,
-    "share": null
+    "share": null,
+    "target_dir": "",
+    "username": "",
+    "password": ""
   },
   "schema": {
     "host": "str",
-    "share": "str"
+    "share": "str",
+    "target_dir": "str",
+    "username": "str",
+    "password": "str"
   }
 }
