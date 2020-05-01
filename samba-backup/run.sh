@@ -41,7 +41,7 @@ function copy-snapshot {
 }
 
 function cleanup-snapshots {
-    echo "to be implemented"
+    echo "cleanup not implemented yet"
 }
 ###############
 
@@ -50,7 +50,7 @@ function cleanup-snapshots {
 
 create-snapshot
 copy-snapshot
-cleanup-snapshots
+#cleanup-snapshots
 
 echo "Backup finished"
 exit 0
