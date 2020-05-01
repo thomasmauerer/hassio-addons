@@ -2,7 +2,7 @@
 
 Create snapshots and store them on a Samba share.
 
-![Supports aarch64 Architecture][aarch64-shield] ![Supports amd64 Architecture][amd64-shield] ![Suppor    ts armhf Architecture][armhf-shield] ![Supports armv7 Architecture][armv7-shield] ![Supports i386 Arch    itecture][i386-shield]
+![Supports aarch64 Architecture][aarch64-shield] ![Supports amd64 Architecture][amd64-shield] ![Supports armhf Architecture][armhf-shield] ![Supports armv7 Architecture][armv7-shield] ![Supports i386 Architecture][i386-shield]
 
 ## About
 
@@ -32,8 +32,8 @@ _Example configuration_:
   "host": "192.168.178.100",
   "share": "my-share",
   "target_dir": "backups/ha-backups",
-  "username": '',
-  "password": ''
+  "username": "",
+  "password": "" 
 }
 ```
 
