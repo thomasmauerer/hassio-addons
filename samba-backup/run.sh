@@ -24,20 +24,20 @@ fi
 function create-snapshot {
     name="Backup $(date +'%Y-%m-%d %H:%M')"
     echo "Creating snapshot \"${name}\" ..."
-    SLUG=$(ha snapshots new --name "${name}" | cut -d' ' -f2)
+    SLUG=$(ha snapshots new --name "$name" | cut -d' ' -f2)
     echo "Creating snapshot \"${name}\" ... done"
 }
 
 function copy-snapshot {
     cd /backup
 
-    echo "Copying snapshot \""${SLUG}".tar\" ..."
+    echo "Copying snapshot ${SLUG}.tar ..."
     if [ -n "$USERNAME" ] && [ -n "$PASSWORD" ]; then
         smbclient -U "$USERNAME"%"$PASSWORD" //"$HOST"/"$SHARE" -c 'cd '"$TARGET_DIR"'; put '"$SLUG".tar
     else
         smbclient -N //"$HOST"/"$SHARE" -c 'cd '"$TARGET_DIR"'; put '"$SLUG".tar
     fi
-    echo "Copying snapshot \""${SLUG}".tar\" ... done"
+    echo "Copying snapshot ${SLUG}.tar ... done"
 }
 
 function cleanup-snapshots {
