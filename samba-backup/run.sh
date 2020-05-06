@@ -24,7 +24,7 @@ echo "Keep local: ${KEEP_LOCAL}"
 #### functions ####
 
 function create-snapshot {
-    name="Backup $(date +'%Y-%m-%d %H:%M')"
+    name="Automatic Backup $(date +'%Y-%m-%d %H:%M')"
     echo "Creating snapshot \"${name}\" ..."
     SLUG=$(ha snapshots new --name "$name" --raw-json | jq -r .data.slug)
     echo "Creating snapshot \"${name}\" ... done"
