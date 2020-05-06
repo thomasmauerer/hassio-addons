@@ -7,6 +7,7 @@ SHARE=$(bashio::config 'share')
 TARGET_DIR=$(bashio::config 'target_dir')
 USERNAME=$(bashio::config 'username')
 PASSWORD=$(bashio::config 'password')
+KEEP_LOCAL=$(bashio::config 'keep_local')
 
 echo "Host: ${HOST}"
 echo "Share: ${SHARE}"
@@ -16,6 +17,7 @@ if [ -z "$USERNAME" ]; then
 else
     echo "Username: ${USERNAME}"
 fi
+echo "Keep local: ${KEEP_LOCAL}"
 ###############
 
 
@@ -40,8 +42,8 @@ function copy-snapshot {
     echo "Copying snapshot ${SLUG}.tar ... done"
 }
 
-function cleanup-snapshots {
-    echo "cleanup not implemented yet"
+function cleanup-snapshots-local {
+    echo "not implemented yet"
 }
 ###############
 
@@ -50,7 +52,7 @@ function cleanup-snapshots {
 
 create-snapshot
 copy-snapshot
-#cleanup-snapshots
+#cleanup-snapshots-local
 
 echo "Backup finished"
 exit 0

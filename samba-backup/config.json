@@ -16,13 +16,15 @@
     "share": null,
     "target_dir": "",
     "username": "",
-    "password": ""
+    "password": "",
+    "keep_local": "all"
   },
   "schema": {
     "host": "str",
     "share": "str",
     "target_dir": "str",
     "username": "str",
-    "password": "str"
+    "password": "str",
+    "keep_local": "match(^(all|[+]?\\d*)$)"
   }
 }
