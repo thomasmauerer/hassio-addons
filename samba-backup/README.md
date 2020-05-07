@@ -23,6 +23,7 @@ The `host` and the `share` parameters are always required. If you do not specify
 |`target_dir`|No|The target directory on the Samba share. If not specified the snapshots will be stored in the root directory.|
 |`username`|No|The username to access the Samba share.|
 |`password`|No|The password to access the Samba share.|
+|`keep_local`|No|The number of local snapshots to be preserved. Set `all` if you do not want to delete any snapshots.|
 
 _Example configuration_:
 ```json
@@ -31,7 +32,8 @@ _Example configuration_:
   "share": "my-share",
   "target_dir": "backups/ha-backups",
   "username": "",
-  "password": "" 
+  "password": "",
+  "keep_local": "14"
 }
 ```
 
