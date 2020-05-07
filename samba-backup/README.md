@@ -37,5 +37,18 @@ _Example configuration_:
 }
 ```
 
+_Example automation to trigger a backup once per day_:
+```yaml
+automation:
+  - alias: Auto Backup
+    trigger:
+    - at: 04:00:00
+      platform: time
+    action:
+    - service: hassio.addon_start
+      data:
+        addon: 15d21743_samba_backup
+```
+
 ## Credits
 This add-on is inspired by [hassio-remote-backup](https://github.com/overkill32/hassio-remote-backup), but does not require a ssh connection, but simply a Samba share.
