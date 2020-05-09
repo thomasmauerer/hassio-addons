@@ -12,10 +12,12 @@ KEEP_LOCAL=$(bashio::config 'keep_local')
 echo "Host: ${HOST}"
 echo "Share: ${SHARE}"
 echo "Target Dir: ${TARGET_DIR}"
-if [ -z "$USERNAME" ]; then
-    echo "Username: guest mode"
-else
+if [ -n "$USERNAME" ] && [ -n "$PASSWORD" ]; then
     echo "Username: ${USERNAME}"
+    SMB="smbclient -U ${USERNAME}%${PASSWORD} //${HOST}/${SHARE}"
+else
+    echo "Username: guest mode"
+    SMB="smbclient -N //${HOST}/${SHARE}"
 fi
 echo "Keep local: ${KEEP_LOCAL}"
 ###############
@@ -34,11 +36,7 @@ function copy-snapshot {
     cd /backup
 
     echo "Copying snapshot ${SLUG} ..."
-    if [ -n "$USERNAME" ] && [ -n "$PASSWORD" ]; then
-        smbclient -U "$USERNAME"%"$PASSWORD" //"$HOST"/"$SHARE" -c 'cd '"$TARGET_DIR"'; put '"$SLUG"
-    else
-        smbclient -N //"$HOST"/"$SHARE" -c 'cd '"$TARGET_DIR"'; put '"$SLUG"
-    fi
+    $SMB -c "cd ${TARGET_DIR}; put ${SLUG}"
     echo "Copying snapshot ${SLUG} ... done"
 }
 
