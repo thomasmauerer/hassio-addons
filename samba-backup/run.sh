@@ -41,23 +41,19 @@ function copy-snapshot {
 }
 
 function cleanup-snapshots-local {
-    if [ "$KEEP_LOCAL" == "all" ]; then
-        :
-    else
-        snaps=$(ha snapshots --raw-json | jq -c .data.snapshots[] | grep "Automatic Backup" | jq -c '{date,slug}' | sort -r)
-        echo "$snaps"
+    snaps=$(ha snapshots --raw-json | jq -c .data.snapshots[] | grep "Automatic Backup" | jq -c '{date,slug}' | sort -r)
+    echo "$snaps"
 
-        i="1"
-        echo "$snaps" | while read backup; do
-            if [ -z "$KEEP_LOCAL" ] || [ "$i" -gt "$KEEP_LOCAL" ]; then
-                theslug=$(echo $backup | jq -r .slug)
-                echo "Deleting ${theslug} ..."
-                ha snapshots remove "$theslug"
-                echo "Deleting ${theslug} ... done"
-            fi
-            i=$(($i + 1))
-        done
-    fi
+    i="1"
+    echo "$snaps" | while read backup; do
+        if [ -z "$KEEP_LOCAL" ] || [ "$i" -gt "$KEEP_LOCAL" ]; then
+            theslug=$(echo $backup | jq -r .slug)
+            echo "Deleting ${theslug} ..."
+            ha snapshots remove "$theslug"
+            echo "Deleting ${theslug} ... done"
+        fi
+        i=$(($i + 1))
+    done
 }
 ###############
 
@@ -66,7 +62,7 @@ function cleanup-snapshots-local {
 
 create-snapshot
 copy-snapshot
-cleanup-snapshots-local
+[ "$KEEP_LOCAL" != "all" ] && cleanup-snapshots-local
 
 echo "Backup finished"
 exit 0
