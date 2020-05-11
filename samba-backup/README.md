@@ -24,6 +24,7 @@ The `host` and the `share` parameters are always required. If you do not specify
 |`username`|No|The username to access the Samba share.|
 |`password`|No|The password to access the Samba share.|
 |`keep_local`|No|The number of local snapshots to be preserved. Set `all` if you do not want to delete any snapshots.|
+|`backup_password`|No|If specified the snapshots will be password-protected.|
 
 _Example configuration_:
 ```json
@@ -31,9 +32,10 @@ _Example configuration_:
   "host": "192.168.178.100",
   "share": "my-share",
   "target_dir": "backups/ha-backups",
-  "username": "",
-  "password": "",
-  "keep_local": "14"
+  "username": "my-user",
+  "password": "my-password",
+  "keep_local": "14",
+  "backup_password": "my-$tr0nG-pwd"
 }
 ```
 
