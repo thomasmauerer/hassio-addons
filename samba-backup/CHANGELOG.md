@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2
+
+- Add support for password-protected snapshots
+
 ## 1.1
 
 - Add support to clean up local snapshots
