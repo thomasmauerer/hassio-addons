@@ -8,6 +8,7 @@ TARGET_DIR=$(bashio::config 'target_dir')
 USERNAME=$(bashio::config 'username')
 PASSWORD=$(bashio::config 'password')
 KEEP_LOCAL=$(bashio::config 'keep_local')
+BACKUP_PWD=$(bashio::config 'backup_password')
 
 echo "Host: ${HOST}"
 echo "Share: ${SHARE}"
@@ -28,7 +29,7 @@ echo "Keep local: ${KEEP_LOCAL}"
 function create-snapshot {
     name="Automatic Backup $(date +'%Y-%m-%d %H:%M')"
     echo "Creating snapshot \"${name}\" ..."
-    SLUG="$(ha snapshots new --name "$name" --raw-json | jq -r .data.slug).tar"
+    SLUG="$(ha snapshots new --name "$name" --password "$BACKUP_PWD" --raw-json | jq -r .data.slug).tar"
     echo "Creating snapshot \"${name}\" ... done"
 }
 

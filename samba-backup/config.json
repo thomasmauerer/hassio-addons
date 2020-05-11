@@ -17,7 +17,8 @@
     "target_dir": "",
     "username": "",
     "password": "",
-    "keep_local": "all"
+    "keep_local": "all",
+    "backup_password": ""
   },
   "schema": {
     "host": "str",
@@ -25,6 +26,7 @@
     "target_dir": "str",
     "username": "str",
     "password": "str",
-    "keep_local": "match(^(all|[+]?\\d*)$)"
+    "keep_local": "match(^(all|[+]?\\d*)$)",
+    "backup_password": "str"
   }
 }
