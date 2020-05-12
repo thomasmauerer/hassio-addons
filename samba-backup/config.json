@@ -18,6 +18,7 @@
     "username": "",
     "password": "",
     "keep_local": "all",
+    "keep_remote": "all",
     "backup_password": ""
   },
   "schema": {
@@ -27,6 +28,7 @@
     "username": "str",
     "password": "str",
     "keep_local": "match(^(all|[+]?\\d*)$)",
+    "keep_remote": "match(^(all|[+]?\\d*)$)",
     "backup_password": "str"
   }
 }

@@ -8,6 +8,7 @@ TARGET_DIR=$(bashio::config 'target_dir')
 USERNAME=$(bashio::config 'username')
 PASSWORD=$(bashio::config 'password')
 KEEP_LOCAL=$(bashio::config 'keep_local')
+KEEP_REMOTE=$(bashio::config 'keep_remote')
 BACKUP_PWD=$(bashio::config 'backup_password')
 
 echo "Host: ${HOST}"
@@ -21,6 +22,7 @@ else
     SMB="smbclient -N //${HOST}/${SHARE}"
 fi
 echo "Keep local: ${KEEP_LOCAL}"
+echo "Keep remote: ${KEEP_REMOTE}"
 ###############
 
 
@@ -56,6 +58,10 @@ function cleanup-snapshots-local {
         i=$(($i + 1))
     done
 }
+
+function cleanup-snapshots-remote {
+    echo "TODO"
+}
 ###############
 
 
@@ -64,6 +70,7 @@ function cleanup-snapshots-local {
 create-snapshot
 copy-snapshot
 [ "$KEEP_LOCAL" != "all" ] && cleanup-snapshots-local
+[ "$KEEP_REMOTE" != "all" ] && cleanup-snapshots-remote
 
 echo "Backup finished"
 exit 0
