@@ -37,7 +37,6 @@ function create-snapshot {
 
 function copy-snapshot {
     cd /backup
-
     echo "Copying snapshot ${SLUG} ..."
     $SMB -c "cd ${TARGET_DIR}; put ${SLUG}"
     echo "Copying snapshot ${SLUG} ... done"
@@ -60,7 +59,22 @@ function cleanup-snapshots-local {
 }
 
 function cleanup-snapshots-remote {
-    echo "TODO"
+    input="$($SMB -c "cd ${TARGET_DIR}; ls")"
+    snaps="$(echo "$input" | grep .tar | while read slug _ _ _ a b c d; do
+        theDate=$(echo "$a $b $c $d" | xargs -i date +'%Y-%m-%d %H:%M' -d "{}")
+        echo "$theDate $slug"
+    done | sort -r)"
+    echo "$snaps"
+
+    i="1"
+    echo "$snaps" | while read _ _ slug; do
+        if [ -z "$KEEP_REMOTE" ] || [ "$i" -gt "$KEEP_REMOTE" ]; then
+            echo "Deleting ${slug} ..."
+            $SMB -c "cd ${TARGET_DIR}; rm ${slug}"
+            echo "Deleting ${slug} ... done"
+        fi
+        i=$(($i + 1))
+    done
 }
 ###############
 
