@@ -24,6 +24,7 @@ The `host` and the `share` parameters are always required. If you do not specify
 |`username`|No|The username to access the Samba share.|
 |`password`|No|The password to access the Samba share.|
 |`keep_local`|No|The number of local snapshots to be preserved. Set `all` if you do not want to delete any snapshots.|
+|`keep_remote`|No|The number of snapshots to be preserved on the Samba share. Set `all` if you do not want to delete any snapshots.|
 |`backup_password`|No|If specified the snapshots will be password-protected.|
 
 _Example configuration_:
@@ -35,6 +36,7 @@ _Example configuration_:
   "username": "my-user",
   "password": "my-password",
   "keep_local": "14",
+  "keep_remote": "30",
   "backup_password": "my-$tr0nG-pwd"
 }
 ```
@@ -53,4 +55,4 @@ automation:
 ```
 
 ## Credits
-This add-on is inspired by [hassio-remote-backup](https://github.com/overkill32/hassio-remote-backup), but does not require a ssh connection, but simply a Samba share.
+This add-on is inspired by [hassio-remote-backup](https://github.com/overkill32/hassio-remote-backup), but does not require a ssh connection and also offers more features.
