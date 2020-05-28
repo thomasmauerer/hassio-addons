@@ -15,7 +15,7 @@ echo "Host: ${HOST}"
 echo "Share: ${SHARE}"
 echo "Target Dir: ${TARGET_DIR}"
 if [ -n "$USERNAME" ] && [ -n "$PASSWORD" ]; then
-    echo "Username: ${USERNAME}"
+    echo "Username: ***"
     SMB="smbclient -U ${USERNAME}%${PASSWORD} //${HOST}/${SHARE}"
 else
     echo "Username: guest mode"
