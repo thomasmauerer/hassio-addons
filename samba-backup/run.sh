@@ -30,8 +30,15 @@ echo "Keep remote: ${KEEP_REMOTE}"
 
 function create-snapshot {
     name="Automatic Backup $(date +'%Y-%m-%d %H:%M')"
+
+    # prepare args
+    args=()
+    args+=("--name" "$name")
+    [ -n "$BACKUP_PWD" ] && args+=("--password" "$BACKUP_PWD")
+
+    # run the command
     echo "Creating snapshot \"${name}\" ..."
-    SLUG="$(ha snapshots new --name "$name" --password "$BACKUP_PWD" --raw-json | jq -r .data.slug).tar"
+    SLUG="$(ha snapshots new "${args[@]}" --raw-json | jq -r .data.slug).tar"
     echo "Creating snapshot \"${name}\" ... done"
 }
 
