@@ -10,6 +10,8 @@ PASSWORD=$(bashio::config 'password')
 KEEP_LOCAL=$(bashio::config 'keep_local')
 KEEP_REMOTE=$(bashio::config 'keep_remote')
 BACKUP_PWD=$(bashio::config 'backup_password')
+EXCLUDE_ADDONS=$(bashio::config 'exclude_addons')
+EXCLUDE_FOLDERS=$(bashio::config 'exclude_folders')
 
 echo "Host: ${HOST}"
 echo "Share: ${SHARE}"
@@ -33,8 +35,20 @@ function create-snapshot {
 
     # prepare args
     args=()
+
     args+=("--name" "$name")
     [ -n "$BACKUP_PWD" ] && args+=("--password" "$BACKUP_PWD")
+
+    # do we need a partial backup?
+    if [ -n "$EXCLUDE_ADDONS" ] || [ -n "$EXCLUDE_FOLDERS" ]; then
+        # include all installed addons that are not listed to be excluded
+        addons=$(ha addons --raw-json | jq -rc '.data.addons[] | select (.installed != null) | .slug')
+        for ad in ${addons}; do [[ ! $EXCLUDE_ADDONS =~ "$ad" ]] && args+=("-a" "$ad"); done
+
+        # include all folders that are not listed to be excluded
+        folders=(homeassistant ssl share addons/local)
+        for fol in ${folders[@]}; do [[ ! $EXCLUDE_FOLDERS =~ "$fol" ]] && args+=("-f" "$fol"); done
+    fi
 
     # run the command
     echo "Creating snapshot \"${name}\" ..."

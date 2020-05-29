@@ -8,7 +8,7 @@
   "startup": "once",
   "boot": "manual",
   "hassio_api": true,
-  "hassio_role": "backup",
+  "hassio_role": "manager",
   "map": ["backup:rw"],
   "image": "thomasmauerer/samba-backup-{arch}",
   "options": {
@@ -19,7 +19,9 @@
     "password": "",
     "keep_local": "all",
     "keep_remote": "all",
-    "backup_password": ""
+    "backup_password": "",
+    "exclude_addons": [""],
+    "exclude_folders": [""]
   },
   "schema": {
     "host": "str",
@@ -29,6 +31,8 @@
     "password": "str",
     "keep_local": "match(^(all|[+]?\\d*)$)",
     "keep_remote": "match(^(all|[+]?\\d*)$)",
-    "backup_password": "str"
+    "backup_password": "str",
+    "exclude_addons": ["str"],
+    "exclude_folders": ["str"]
   }
 }
