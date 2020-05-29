@@ -42,11 +42,8 @@ _Example configuration_:
   "keep_local": "14",
   "keep_remote": "30",
   "backup_password": "my-$tr0nG-pwd",
-  "exclude_addons":
-    - "core_ssh"
-    - "core_duckdns"
-  "exclude_folders":
-    - "share"
+  "exclude_addons": ["core_ssh", "core_duckdns"],
+  "exclude_folders": ["share"]
 }
 ```
 
