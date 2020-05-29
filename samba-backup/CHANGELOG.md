@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4
+
+- Add support for partial snapshots
+- Minor improvements
+
 ## 1.3
 
 - Add support to clean up remote snapshots
