@@ -28,6 +28,8 @@ The `host` and the `share` parameters are always required. If you do not specify
 |`keep_local`|No|The number of local snapshots to be preserved. Set `all` if you do not want to delete any snapshots.|
 |`keep_remote`|No|The number of snapshots to be preserved on the Samba share. Set `all` if you do not want to delete any snapshots.|
 |`backup_password`|No|If specified the snapshots will be password-protected.|
+|`exclude_addons`|No|The slugs of add-ons to exclude in the snapshot. This will trigger a partial snapshot if specified. You can find out the correct slugs by clicking on an installed add-on and looking at the URL e.g. `core_ssh`.|
+|`exclude_folders`|No|The folders to exclude in the snapshot. This will trigger a partial snapshot if specified. Possible values are `homeassistant`, `ssl`, `share` and `addons/local`.|
 
 _Example configuration_:
 ```json
@@ -39,7 +41,12 @@ _Example configuration_:
   "password": "my-password",
   "keep_local": "14",
   "keep_remote": "30",
-  "backup_password": "my-$tr0nG-pwd"
+  "backup_password": "my-$tr0nG-pwd",
+  "exclude_addons":
+    - "core_ssh"
+    - "core_duckdns"
+  "exclude_folders":
+    - "share"
 }
 ```
 
