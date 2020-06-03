@@ -80,8 +80,9 @@ function cleanup-snapshots-local {
 }
 
 function cleanup-snapshots-remote {
+    # read all tar files that match the snapshot name pattern and sort them
     input="$($SMB -c "cd ${TARGET_DIR}; ls")"
-    snaps="$(echo "$input" | grep .tar | while read slug _ _ _ a b c d; do
+    snaps="$(echo "$input" | grep -E '\<[0-9a-f]{8}\.tar\>' | while read slug _ _ _ a b c d; do
         theDate=$(echo "$a $b $c $d" | xargs -i date +'%Y-%m-%d %H:%M' -d "{}")
         echo "$theDate $slug"
     done | sort -r)"
