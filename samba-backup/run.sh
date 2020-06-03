@@ -9,9 +9,9 @@ USERNAME=$(bashio::config 'username')
 PASSWORD=$(bashio::config 'password')
 KEEP_LOCAL=$(bashio::config 'keep_local')
 KEEP_REMOTE=$(bashio::config 'keep_remote')
-BACKUP_PWD=$(bashio::config 'backup_password')
 EXCLUDE_ADDONS=$(bashio::config 'exclude_addons')
 EXCLUDE_FOLDERS=$(bashio::config 'exclude_folders')
+bashio::config.exists 'backup_password' && BACKUP_PWD=$(bashio::config 'backup_password') || BACKUP_PWD=""
 
 echo "Host: ${HOST}"
 echo "Share: ${SHARE}"

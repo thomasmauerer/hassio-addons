@@ -19,9 +19,8 @@
     "password": "",
     "keep_local": "all",
     "keep_remote": "all",
-    "backup_password": "",
-    "exclude_addons": [""],
-    "exclude_folders": [""]
+    "exclude_addons": [],
+    "exclude_folders": []
   },
   "schema": {
     "host": "str",
@@ -29,10 +28,10 @@
     "target_dir": "str",
     "username": "str",
     "password": "str",
-    "keep_local": "match(^(all|[+]?\\d*)$)",
-    "keep_remote": "match(^(all|[+]?\\d*)$)",
-    "backup_password": "str",
+    "keep_local": "match(^(all|[0-9]*)$)",
+    "keep_remote": "match(^(all|[0-9]*)$)",
     "exclude_addons": ["str"],
-    "exclude_folders": ["str"]
+    "exclude_folders": ["str"],
+    "backup_password": "str?"
   }
 }
