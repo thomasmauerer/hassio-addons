@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5
+
+- Improve remote cleanup functionality
+- Make backup password optional
+
 ## 1.4
 
 - Add support for partial snapshots
