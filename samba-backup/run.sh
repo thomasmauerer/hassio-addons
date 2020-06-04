@@ -11,16 +11,15 @@ KEEP_LOCAL=$(bashio::config 'keep_local')
 KEEP_REMOTE=$(bashio::config 'keep_remote')
 EXCLUDE_ADDONS=$(bashio::config 'exclude_addons')
 EXCLUDE_FOLDERS=$(bashio::config 'exclude_folders')
+bashio::config.exists 'backup_name' && BACKUP_NAME=$(bashio::config 'backup_name') || BACKUP_NAME=""
 bashio::config.exists 'backup_password' && BACKUP_PWD=$(bashio::config 'backup_password') || BACKUP_PWD=""
 
 echo "Host: ${HOST}"
 echo "Share: ${SHARE}"
 echo "Target Dir: ${TARGET_DIR}"
 if [ -n "$USERNAME" ] && [ -n "$PASSWORD" ]; then
-    echo "Username: ***"
     SMB="smbclient -U ${USERNAME}%${PASSWORD} //${HOST}/${SHARE}"
 else
-    echo "Username: guest mode"
     SMB="smbclient -N //${HOST}/${SHARE}"
 fi
 echo "Keep local: ${KEEP_LOCAL}"
@@ -31,7 +30,7 @@ echo "Keep remote: ${KEEP_REMOTE}"
 #### functions ####
 
 function create-snapshot {
-    name="Automatic Backup $(date +'%Y-%m-%d %H:%M')"
+    [ -n "$BACKUP_NAME" ] && name="${BACKUP_NAME} $(date +'%Y-%m-%d %H:%M')" || name="Samba Backup $(date +'%Y-%m-%d %H:%M')"
 
     # prepare args
     args=()

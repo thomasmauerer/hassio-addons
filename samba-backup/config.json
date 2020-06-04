@@ -32,6 +32,7 @@
     "keep_remote": "match(^(all|[0-9]+)$)",
     "exclude_addons": ["str"],
     "exclude_folders": ["str"],
+    "backup_name": "str?",
     "backup_password": "str?"
   }
 }
