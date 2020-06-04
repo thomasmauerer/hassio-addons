@@ -9,6 +9,7 @@ USERNAME=$(bashio::config 'username')
 PASSWORD=$(bashio::config 'password')
 KEEP_LOCAL=$(bashio::config 'keep_local')
 KEEP_REMOTE=$(bashio::config 'keep_remote')
+TRIGGER_TIME=$(bashio::config 'trigger_time')
 EXCLUDE_ADDONS=$(bashio::config 'exclude_addons')
 EXCLUDE_FOLDERS=$(bashio::config 'exclude_folders')
 bashio::config.exists 'backup_name' && BACKUP_NAME=$(bashio::config 'backup_name') || BACKUP_NAME=""
@@ -19,6 +20,7 @@ echo "Share: ${SHARE}"
 echo "Target Dir: ${TARGET_DIR}"
 echo "Keep local: ${KEEP_LOCAL}"
 echo "Keep remote: ${KEEP_REMOTE}"
+echo "Trigger time: ${TRIGGER_TIME}"
 if [[ -n "$USERNAME" && -n "$PASSWORD" ]]; then
     SMB="smbclient -U ${USERNAME}%${PASSWORD} //${HOST}/${SHARE}"
 else
@@ -124,5 +126,12 @@ function run-script {
 
 #### main program ####
 
-run-script
-exit 0
+while true; do
+    current_date=$(date +'%H:%M')
+
+    # do we have to run now?
+    [[ "$current_date" == "$TRIGGER_TIME" ]] && run-script
+
+    sleep 60
+done
+###############
