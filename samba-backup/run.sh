@@ -10,6 +10,7 @@ PASSWORD=$(bashio::config 'password')
 KEEP_LOCAL=$(bashio::config 'keep_local')
 KEEP_REMOTE=$(bashio::config 'keep_remote')
 TRIGGER_TIME=$(bashio::config 'trigger_time')
+TRIGGER_DAYS=$(bashio::config 'trigger_days')
 EXCLUDE_ADDONS=$(bashio::config 'exclude_addons')
 EXCLUDE_FOLDERS=$(bashio::config 'exclude_folders')
 bashio::config.exists 'backup_name' && BACKUP_NAME=$(bashio::config 'backup_name') || BACKUP_NAME=""
@@ -127,11 +128,15 @@ function run-script {
 #### main program ####
 
 while true; do
-    current_date=$(date +'%H:%M')
+    if [[ "$TRIGGER_TIME" == "manual" ]]; then
+        echo "manual trigger not implemented yet"
+        exit 0
+    else
+        # do we have to run it now?
+        current_date=$(date +'%a %H:%M')
+        [[ "$TRIGGER_DAYS" =~ "${current_date:0:3}" && "$current_date" =~ "$TRIGGER_TIME" ]] && run-script
 
-    # do we have to run now?
-    [[ "$current_date" == "$TRIGGER_TIME" ]] && run-script
-
-    sleep 60
+        sleep 60
+    fi
 done
 ###############
