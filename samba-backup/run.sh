@@ -17,20 +17,20 @@ bashio::config.exists 'backup_password' && BACKUP_PWD=$(bashio::config 'backup_p
 echo "Host: ${HOST}"
 echo "Share: ${SHARE}"
 echo "Target Dir: ${TARGET_DIR}"
-if [ -n "$USERNAME" ] && [ -n "$PASSWORD" ]; then
+echo "Keep local: ${KEEP_LOCAL}"
+echo "Keep remote: ${KEEP_REMOTE}"
+if [[ -n "$USERNAME" && -n "$PASSWORD" ]]; then
     SMB="smbclient -U ${USERNAME}%${PASSWORD} //${HOST}/${SHARE}"
 else
     SMB="smbclient -N //${HOST}/${SHARE}"
 fi
-echo "Keep local: ${KEEP_LOCAL}"
-echo "Keep remote: ${KEEP_REMOTE}"
 ###############
 
 
-#### functions ####
+#### main functions ####
 
 function create-snapshot {
-    [ -n "$BACKUP_NAME" ] && name="${BACKUP_NAME} $(date +'%Y-%m-%d %H:%M')" || name="Samba Backup $(date +'%Y-%m-%d %H:%M')"
+    name=$(generate-snapshot-name)
 
     # prepare args
     args=()
@@ -39,7 +39,7 @@ function create-snapshot {
     [ -n "$BACKUP_PWD" ] && args+=("--password" "$BACKUP_PWD")
 
     # do we need a partial backup?
-    if [ -n "$EXCLUDE_ADDONS" ] || [ -n "$EXCLUDE_FOLDERS" ]; then
+    if [[ -n "$EXCLUDE_ADDONS" || -n "$EXCLUDE_FOLDERS" ]]; then
         # include all installed addons that are not listed to be excluded
         addons=$(ha addons --raw-json | jq -rc '.data.addons[] | select (.installed != null) | .slug')
         for ad in ${addons}; do [[ ! $EXCLUDE_ADDONS =~ "$ad" ]] && args+=("-a" "$ad"); done
@@ -92,12 +92,37 @@ function cleanup-snapshots-remote {
 ###############
 
 
+#### helper functions ####
+
+function generate-snapshot-name {
+    if [ -n "$BACKUP_NAME" ]; then
+        # get all values
+        theversion=$(ha core info --raw-json | jq -r .data.version_latest)
+        [[ -n "$EXCLUDE_ADDONS" || -n "$EXCLUDE_FOLDERS" ]] && thetype="Partial" || thetype="Full"
+        thedate=$(date +'%Y-%m-%d %H:%M')
+
+        # replace the string patterns with the real values
+        name=$BACKUP_NAME
+        name=${name/\{version\}/$theversion}
+        name=${name/\{type\}/$thetype}
+        name=${name/\{date\}/$thedate}
+    else
+        name="Samba Backup $(date +'%Y-%m-%d %H:%M')"
+    fi
+
+    echo "$name"
+}
+
+function run-script {
+    create-snapshot
+    copy-snapshot
+    [ "$KEEP_LOCAL" != "all" ] && cleanup-snapshots-local
+    [ "$KEEP_REMOTE" != "all" ] && cleanup-snapshots-remote
+}
+###############
+
+
 #### main program ####
 
-create-snapshot
-copy-snapshot
-[ "$KEEP_LOCAL" != "all" ] && cleanup-snapshots-local
-[ "$KEEP_REMOTE" != "all" ] && cleanup-snapshots-remote
-
-echo "Backup finished"
+run-script
 exit 0
