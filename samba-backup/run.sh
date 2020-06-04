@@ -67,15 +67,11 @@ function cleanup-snapshots-local {
     snaps=$(ha snapshots --raw-json | jq -c '.data.snapshots[] | {date,slug,name} | select(.name | contains("Automatic Backup"))' | sort -r)
     echo "$snaps"
 
-    i="1"
-    echo "$snaps" | while read backup; do
-        if [ -z "$KEEP_LOCAL" ] || [ "$i" -gt "$KEEP_LOCAL" ]; then
-            theslug=$(echo $backup | jq -r .slug)
-            echo "Deleting ${theslug} ..."
-            ha snapshots remove "$theslug"
-            echo "Deleting ${theslug} ... done"
-        fi
-        i=$(($i + 1))
+    echo "$snaps" | tail -n +$(($KEEP_LOCAL + 1)) | while read backup; do
+        theslug=$(echo $backup | jq -r .slug)
+        echo "Deleting ${theslug} ..."
+        ha snapshots remove "$theslug"
+        echo "Deleting ${theslug} ... done"
     done
 }
 
@@ -88,14 +84,10 @@ function cleanup-snapshots-remote {
     done | sort -r)"
     echo "$snaps"
 
-    i="1"
-    echo "$snaps" | while read _ _ slug; do
-        if [ -z "$KEEP_REMOTE" ] || [ "$i" -gt "$KEEP_REMOTE" ]; then
-            echo "Deleting ${slug} ..."
-            $SMB -c "cd ${TARGET_DIR}; rm ${slug}"
-            echo "Deleting ${slug} ... done"
-        fi
-        i=$(($i + 1))
+    echo "$snaps" | tail -n +$(($KEEP_REMOTE + 1)) | while read _ _ slug; do
+        echo "Deleting ${slug} ..."
+        $SMB -c "cd ${TARGET_DIR}; rm ${slug}"
+        echo "Deleting ${slug} ... done"
     done
 }
 ###############

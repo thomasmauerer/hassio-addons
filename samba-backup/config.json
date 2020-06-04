@@ -28,8 +28,8 @@
     "target_dir": "str",
     "username": "str",
     "password": "str",
-    "keep_local": "match(^(all|[0-9]*)$)",
-    "keep_remote": "match(^(all|[0-9]*)$)",
+    "keep_local": "match(^(all|[0-9]+)$)",
+    "keep_remote": "match(^(all|[0-9]+)$)",
     "exclude_addons": ["str"],
     "exclude_folders": ["str"],
     "backup_password": "str?"
