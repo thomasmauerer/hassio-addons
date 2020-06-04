@@ -64,7 +64,7 @@ function copy-snapshot {
 }
 
 function cleanup-snapshots-local {
-    snaps=$(ha snapshots --raw-json | jq -c '.data.snapshots[] | {date,slug,name} | select(.name | contains("Automatic Backup"))' | sort -r)
+    snaps=$(ha snapshots --raw-json | jq -c '.data.snapshots[] | {date,slug,name}' | sort -r)
     echo "$snaps"
 
     echo "$snaps" | tail -n +$(($KEEP_LOCAL + 1)) | while read backup; do
