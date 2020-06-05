@@ -2,6 +2,8 @@
 
 ![Supports aarch64 Architecture][aarch64-shield] ![Supports amd64 Architecture][amd64-shield] ![Supports armhf Architecture][armhf-shield] ![Supports armv7 Architecture][armv7-shield] ![Supports i386 Architecture][i386-shield]
 
+![Current version][version]
+
 Create snapshots and store them on a Samba share.
 
 ## About
@@ -25,11 +27,14 @@ The `host` and the `share` parameters are always required. If you do not specify
 |`target_dir`|No|The target directory on the Samba share. If not specified the snapshots will be stored in the root directory.|
 |`username`|No|The username to access the Samba share.|
 |`password`|No|The password to access the Samba share.|
-|`keep_local`|No|The number of local snapshots to be preserved. Set `all` if you do not want to delete any snapshots.|
-|`keep_remote`|No|The number of snapshots to be preserved on the Samba share. Set `all` if you do not want to delete any snapshots.|
-|`backup_password`|No|If specified the snapshots will be password-protected.|
+|`keep_local`|Yes|The number of local snapshots to be preserved. Set `all` if you do not want to delete any snapshots. Note that this will also delete snapshots that were not created with this add-on.|
+|`keep_remote`|Yes|The number of snapshots to be preserved on the Samba share. Set `all` if you do not want to delete any snapshots.|
+|`trigger_time`|Yes|The time when to automatically trigger a backup. See below for advanced options.|
+|`trigger_days`|Yes|The days on which a backup will be triggered.|
 |`exclude_addons`|No|The slugs of add-ons to exclude in the snapshot. This will trigger a partial snapshot if specified. You can find out the correct slugs by clicking on an installed add-on and looking at the URL e.g. `core_ssh`.|
 |`exclude_folders`|No|The folders to exclude in the snapshot. This will trigger a partial snapshot if specified. Possible values are `homeassistant`, `ssl`, `share` and `addons/local`.|
+|`backup_name`|No|The custom name for the snapshots. See below for advanced options.|
+|`backup_password`|No|If specified the snapshots will be password-protected.|
 
 _Example configuration_:
 ```json
@@ -41,23 +46,37 @@ _Example configuration_:
   "password": "my-password",
   "keep_local": "14",
   "keep_remote": "30",
-  "backup_password": "my-$tr0nG-pwd",
+  "trigger_time": "04:00",
+  "trigger_days": ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
   "exclude_addons": ["core_ssh", "core_duckdns"],
-  "exclude_folders": ["share"]
+  "exclude_folders": ["share"],
+  "backup_name": "{type} Snapshot (Samba Backup) {date}",
+  "backup_password": "my-$tr0nG-pwd",
 }
 ```
 
-_Example automation to trigger a backup once per day_:
+### What if I don't like the names of the snapshots?
+
+No problem, you can customize the names with the `backup_name` variable. You can either use a fixed text or include the following name patterns which will automatically be converted to its real values.
+
+- `{type}`: Full or Partial
+- `{version}`: The current version of Home Assistant
+- `{date}`: The current date and timestamp
+
+_Example_: "{type} Snapshot {version} {date}" might end up as "Full Snapshot 0.110.4 2020-06-05 12:00"
+
+
+### What if the supported triggers do not suit my needs?
+
+Maybe you want some advanced trigger based on a specific Home Assistant event? No problem, you can still create your own Home Assistant automation to trigger this add-on. You just have to do two things:
+
+1. Set `trigger_time` to *manual*
+2. Include the following in your automation
 ```yaml
-automation:
-  - alias: Auto Backup
-    trigger:
-    - at: 04:00:00
-      platform: time
-    action:
-    - service: hassio.addon_start
-      data:
-        addon: 15d21743_samba_backup
+  service: hassio.addon_stdin
+  data:
+    addon: 15d21743_samba_backup
+    input: trigger
 ```
 
 ## Credits
@@ -68,3 +87,4 @@ This add-on is inspired by [hassio-remote-backup](https://github.com/overkill32/
 [armhf-shield]: https://img.shields.io/badge/armhf-yes-green.svg
 [armv7-shield]: https://img.shields.io/badge/armv7-yes-green.svg
 [i386-shield]: https://img.shields.io/badge/i386-yes-green.svg
+[version]: https://img.shields.io/badge/version-v2.0-blue.svg
