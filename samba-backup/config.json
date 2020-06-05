@@ -9,6 +9,7 @@
   "boot": "auto",
   "hassio_api": true,
   "hassio_role": "manager",
+  "stdin": true,
   "map": ["backup:rw"],
   "image": "thomasmauerer/samba-backup-{arch}",
   "options": {

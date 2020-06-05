@@ -129,8 +129,10 @@ function run-script {
 
 while true; do
     if [[ "$TRIGGER_TIME" == "manual" ]]; then
-        echo "manual trigger not implemented yet"
-        exit 0
+        # read from STDIN
+        read -r input
+        input=$(echo "$input" | jq -r .)
+        [[ "$input" == "trigger" ]] && run-script
     else
         # do we have to run it now?
         current_date=$(date +'%a %H:%M')
