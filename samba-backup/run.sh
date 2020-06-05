@@ -13,8 +13,8 @@ TRIGGER_TIME=$(bashio::config 'trigger_time')
 TRIGGER_DAYS=$(bashio::config 'trigger_days')
 EXCLUDE_ADDONS=$(bashio::config 'exclude_addons')
 EXCLUDE_FOLDERS=$(bashio::config 'exclude_folders')
-bashio::config.exists 'backup_name' && BACKUP_NAME=$(bashio::config 'backup_name') || BACKUP_NAME=""
-bashio::config.exists 'backup_password' && BACKUP_PWD=$(bashio::config 'backup_password') || BACKUP_PWD=""
+BACKUP_NAME=$(bashio::config 'backup_name')
+BACKUP_PWD=$(bashio::config 'backup_password')
 
 echo "Host: ${HOST}"
 echo "Share: ${SHARE}"
