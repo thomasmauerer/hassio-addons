@@ -22,6 +22,7 @@ echo "Target Dir: ${TARGET_DIR}"
 echo "Keep local: ${KEEP_LOCAL}"
 echo "Keep remote: ${KEEP_REMOTE}"
 echo "Trigger time: ${TRIGGER_TIME}"
+[[ "$TRIGGER_TIME" != "manual" ]] && echo "Trigger days: $(echo "$TRIGGER_DAYS" | xargs)"
 if [[ -n "$USERNAME" && -n "$PASSWORD" ]]; then
     SMB="smbclient -U ${USERNAME}%${PASSWORD} //${HOST}/${SHARE}"
 else
@@ -121,6 +122,7 @@ function run-script {
     copy-snapshot
     [ "$KEEP_LOCAL" != "all" ] && cleanup-snapshots-local
     [ "$KEEP_REMOTE" != "all" ] && cleanup-snapshots-remote
+    echo "Backup finished"
 }
 ###############
 
