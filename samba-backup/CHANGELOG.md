@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0
+
+- This is a breaking release!
+- Samba Backup now cleans up all snapshots stored on the device
+- Samba Backup is now running as a service in the background
+- Support custom snapshot names including name patterns
+- Support triggers out of the box without separate Home Assistant automations
+- Support manual triggers for advanced use-cases
+
 ## 1.5
 
 - Improve remote cleanup functionality
