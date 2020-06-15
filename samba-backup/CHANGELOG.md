@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1
+
+- Fix wrong HA version in name patterns
+
 ## 2.0
 
 - This is a breaking release!
