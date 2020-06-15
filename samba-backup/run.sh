@@ -101,7 +101,7 @@ function cleanup-snapshots-remote {
 function generate-snapshot-name {
     if [ -n "$BACKUP_NAME" ]; then
         # get all values
-        theversion=$(ha core info --raw-json | jq -r .data.version_latest)
+        theversion=$(ha core info --raw-json | jq -r .data.version)
         [[ -n "$EXCLUDE_ADDONS" || -n "$EXCLUDE_FOLDERS" ]] && thetype="Partial" || thetype="Full"
         thedate=$(date +'%Y-%m-%d %H:%M')
 
