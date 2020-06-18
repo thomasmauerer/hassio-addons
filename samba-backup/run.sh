@@ -115,6 +115,22 @@ function run-and-log {
     result=$(eval "$cmd") && bashio::log.debug "$result" || { bashio::log.warning "$result"; return 1; }
 }
 
+function smb-precheck {
+    # check if we can access the share at all
+    run-and-log "${SMB} -c \"exit\"" || { bashio::log.error "Cannot access share. Please check your config."; exit 1; }
+
+    # check if the target directory exists
+    run-and-log "${SMB} -c \"cd ${TARGET_DIR}\"" || { bashio::log.error "Target directory does not exist. Please check your config."; exit 1; }
+
+    # check if we have write permissions
+    run-and-log "${SMB} -c \"cd ${TARGET_DIR}; mkdir samba-tmp123; rmdir samba-tmp123\"" || { bashio::log.error "Missing write permissions. Please check your share settings."; exit 1; }
+}
+
+###############
+
+
+#### main program ####
+
 function run-backup {
     bashio::log.info "Backup running ..."
     create-snapshot
@@ -124,11 +140,7 @@ function run-backup {
     bashio::log.info "Backup finished"
 }
 
-###############
-
-
-#### main program ####
-
+# perform setup stuff
 bashio::log.level "$LOG_LEVEL"
 
 bashio::log.info "Host: ${HOST}"
@@ -140,6 +152,11 @@ bashio::log.info "Trigger time: ${TRIGGER_TIME}"
 [[ "$TRIGGER_TIME" != "manual" ]] && bashio::log.info "Trigger days: $(echo "$TRIGGER_DAYS" | xargs)"
 
 
+# run precheck (will exit on failure)
+smb-precheck
+
+
+# run loop
 while true; do
     if [[ "$TRIGGER_TIME" == "manual" ]]; then
         # read from STDIN
