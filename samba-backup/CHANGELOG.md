@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2
+
+- Use dedicated log functions
+- Control verbosity of logs
+- Perform precheck on Samba share
+
 ## 2.1
 
 - Fix wrong HA version in name patterns

@@ -87,4 +87,4 @@ This add-on is inspired by [hassio-remote-backup](https://github.com/overkill32/
 [armhf-shield]: https://img.shields.io/badge/armhf-yes-green.svg
 [armv7-shield]: https://img.shields.io/badge/armv7-yes-green.svg
 [i386-shield]: https://img.shields.io/badge/i386-yes-green.svg
-[version]: https://img.shields.io/badge/version-v2.1-blue.svg
+[version]: https://img.shields.io/badge/version-v2.2-blue.svg
