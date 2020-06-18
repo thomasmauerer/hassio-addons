@@ -15,19 +15,14 @@ EXCLUDE_ADDONS=$(bashio::config 'exclude_addons')
 EXCLUDE_FOLDERS=$(bashio::config 'exclude_folders')
 BACKUP_NAME=$(bashio::config 'backup_name')
 BACKUP_PWD=$(bashio::config 'backup_password')
+bashio::config.exists 'log_level' && LOG_LEVEL=$(bashio::config 'log_level') || LOG_LEVEL="info"
 
-echo "Host: ${HOST}"
-echo "Share: ${SHARE}"
-echo "Target Dir: ${TARGET_DIR}"
-echo "Keep local: ${KEEP_LOCAL}"
-echo "Keep remote: ${KEEP_REMOTE}"
-echo "Trigger time: ${TRIGGER_TIME}"
-[[ "$TRIGGER_TIME" != "manual" ]] && echo "Trigger days: $(echo "$TRIGGER_DAYS" | xargs)"
 if [[ -n "$USERNAME" && -n "$PASSWORD" ]]; then
-    SMB="smbclient -U ${USERNAME}%${PASSWORD} //${HOST}/${SHARE}"
+    SMB="smbclient -U ${USERNAME}%${PASSWORD} //${HOST}/${SHARE} 2>&1"
 else
-    SMB="smbclient -N //${HOST}/${SHARE}"
+    SMB="smbclient -N //${HOST}/${SHARE} 2>&1"
 fi
+
 ###############
 
 
@@ -54,27 +49,27 @@ function create-snapshot {
     fi
 
     # run the command
-    echo "Creating snapshot \"${name}\" ..."
+    bashio::log.info "Creating snapshot \"${name}\" ..."
     SLUG="$(ha snapshots new "${args[@]}" --raw-json | jq -r .data.slug).tar"
-    echo "Creating snapshot \"${name}\" ... done"
+    bashio::log.info "Creating snapshot \"${name}\" ... done"
 }
 
 function copy-snapshot {
     cd /backup
-    echo "Copying snapshot ${SLUG} ..."
-    $SMB -c "cd ${TARGET_DIR}; put ${SLUG}"
-    echo "Copying snapshot ${SLUG} ... done"
+    bashio::log.info "Copying snapshot ${SLUG} ..."
+    run-and-log "${SMB} -c \"cd ${TARGET_DIR}; put ${SLUG}\""
+    bashio::log.info "Copying snapshot ${SLUG} ... done"
 }
 
 function cleanup-snapshots-local {
     snaps=$(ha snapshots --raw-json | jq -c '.data.snapshots[] | {date,slug,name}' | sort -r)
-    echo "$snaps"
+    bashio::log.debug "$snaps"
 
     echo "$snaps" | tail -n +$(($KEEP_LOCAL + 1)) | while read backup; do
         theslug=$(echo $backup | jq -r .slug)
-        echo "Deleting ${theslug} ..."
-        ha snapshots remove "$theslug"
-        echo "Deleting ${theslug} ... done"
+        bashio::log.info "Deleting ${theslug} ..."
+        run-and-log "ha snapshots remove ${theslug}"
+        bashio::log.info "Deleting ${theslug} ... done"
     done
 }
 
@@ -85,14 +80,15 @@ function cleanup-snapshots-remote {
         theDate=$(echo "$a $b $c $d" | xargs -i date +'%Y-%m-%d %H:%M' -d "{}")
         echo "$theDate $slug"
     done | sort -r)"
-    echo "$snaps"
+    bashio::log.debug "$snaps"
 
     echo "$snaps" | tail -n +$(($KEEP_REMOTE + 1)) | while read _ _ slug; do
-        echo "Deleting ${slug} ..."
-        $SMB -c "cd ${TARGET_DIR}; rm ${slug}"
-        echo "Deleting ${slug} ... done"
+        bashio::log.info "Deleting ${slug} ..."
+        run-and-log "${SMB} -c \"cd ${TARGET_DIR}; rm ${slug}\""
+        bashio::log.info "Deleting ${slug} ... done"
     done
 }
+
 ###############
 
 
@@ -117,17 +113,35 @@ function generate-snapshot-name {
     echo "$name"
 }
 
+function run-and-log {
+    local cmd="$1"
+    local result
+    result=$(eval "$cmd") && bashio::log.debug "$result" || bashio::log.warning "$result"
+}
+
 function run-script {
     create-snapshot
     copy-snapshot
     [ "$KEEP_LOCAL" != "all" ] && cleanup-snapshots-local
     [ "$KEEP_REMOTE" != "all" ] && cleanup-snapshots-remote
-    echo "Backup finished"
+    bashio::log.info "Backup finished"
 }
+
 ###############
 
 
 #### main program ####
+
+bashio::log.level "$LOG_LEVEL"
+
+bashio::log.info "Host: ${HOST}"
+bashio::log.info "Share: ${SHARE}"
+bashio::log.info "Target Dir: ${TARGET_DIR}"
+bashio::log.info "Keep local: ${KEEP_LOCAL}"
+bashio::log.info "Keep remote: ${KEEP_REMOTE}"
+bashio::log.info "Trigger time: ${TRIGGER_TIME}"
+[[ "$TRIGGER_TIME" != "manual" ]] && bashio::log.info "Trigger days: $(echo "$TRIGGER_DAYS" | xargs)"
+
 
 while true; do
     if [[ "$TRIGGER_TIME" == "manual" ]]; then
@@ -143,4 +157,5 @@ while true; do
         sleep 60
     fi
 done
+
 ###############
