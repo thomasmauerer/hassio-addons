@@ -35,6 +35,7 @@ The `host` and the `share` parameters are always required. If you do not specify
 |`exclude_folders`|No|The folders to exclude in the snapshot. This will trigger a partial snapshot if specified. Possible values are `homeassistant`, `ssl`, `share` and `addons/local`.|
 |`backup_name`|No|The custom name for the snapshots. See below for advanced options.|
 |`backup_password`|No|If specified the snapshots will be password-protected.|
+|`log_level`|No|Control the verbosity of log output produced by this add-on. Possible values are `debug`, `info` (default), `warning` and `error`.|
 
 _Example configuration_:
 ```json
@@ -52,6 +53,7 @@ _Example configuration_:
   "exclude_folders": ["share"],
   "backup_name": "{type} Snapshot (Samba Backup) {date}",
   "backup_password": "my-$tr0nG-pwd",
+  "log_level": "debug"
 }
 ```
 
