@@ -49,16 +49,14 @@ function create-snapshot {
     fi
 
     # run the command
-    bashio::log.info "Creating snapshot \"${name}\" ..."
+    bashio::log.info "Creating snapshot \"${name}\""
     SLUG="$(ha snapshots new "${args[@]}" --raw-json | jq -r .data.slug).tar"
-    bashio::log.info "Creating snapshot \"${name}\" ... done"
 }
 
 function copy-snapshot {
     cd /backup
-    bashio::log.info "Copying snapshot ${SLUG} ..."
+    bashio::log.info "Copying snapshot ${SLUG} to share"
     run-and-log "${SMB} -c \"cd ${TARGET_DIR}; put ${SLUG}\""
-    bashio::log.info "Copying snapshot ${SLUG} ... done"
 }
 
 function cleanup-snapshots-local {
@@ -67,9 +65,8 @@ function cleanup-snapshots-local {
 
     echo "$snaps" | tail -n +$(($KEEP_LOCAL + 1)) | while read backup; do
         theslug=$(echo $backup | jq -r .slug)
-        bashio::log.info "Deleting ${theslug} ..."
+        bashio::log.info "Deleting ${theslug} local"
         run-and-log "ha snapshots remove ${theslug}"
-        bashio::log.info "Deleting ${theslug} ... done"
     done
 }
 
@@ -83,9 +80,8 @@ function cleanup-snapshots-remote {
     bashio::log.debug "$snaps"
 
     echo "$snaps" | tail -n +$(($KEEP_REMOTE + 1)) | while read _ _ slug; do
-        bashio::log.info "Deleting ${slug} ..."
+        bashio::log.info "Deleting ${slug} on share"
         run-and-log "${SMB} -c \"cd ${TARGET_DIR}; rm ${slug}\""
-        bashio::log.info "Deleting ${slug} ... done"
     done
 }
 
@@ -116,10 +112,11 @@ function generate-snapshot-name {
 function run-and-log {
     local cmd="$1"
     local result
-    result=$(eval "$cmd") && bashio::log.debug "$result" || bashio::log.warning "$result"
+    result=$(eval "$cmd") && bashio::log.debug "$result" || { bashio::log.warning "$result"; return 1; }
 }
 
-function run-script {
+function run-backup {
+    bashio::log.info "Backup running ..."
     create-snapshot
     copy-snapshot
     [ "$KEEP_LOCAL" != "all" ] && cleanup-snapshots-local
@@ -148,11 +145,11 @@ while true; do
         # read from STDIN
         read -r input
         input=$(echo "$input" | jq -r .)
-        [[ "$input" == "trigger" ]] && run-script
+        [[ "$input" == "trigger" ]] && run-backup
     else
         # do we have to run it now?
         current_date=$(date +'%a %H:%M')
-        [[ "$TRIGGER_DAYS" =~ "${current_date:0:3}" && "$current_date" =~ "$TRIGGER_TIME" ]] && run-script
+        [[ "$TRIGGER_DAYS" =~ "${current_date:0:3}" && "$current_date" =~ "$TRIGGER_TIME" ]] && run-backup
 
         sleep 60
     fi
