@@ -24,9 +24,7 @@
     "trigger_time": "00:00",
     "trigger_days": ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
     "exclude_addons": [],
-    "exclude_folders": [],
-    "backup_name": "",
-    "backup_password": ""
+    "exclude_folders": []
   },
   "schema": {
     "host": "str",
@@ -40,8 +38,8 @@
     "trigger_days": ["match(Mon|Tue|Wed|Thu|Fri|Sat|Sun)"],
     "exclude_addons": ["str"],
     "exclude_folders": ["str"],
-    "backup_name": "str",
-    "backup_password": "str",
+    "backup_name": "str?",
+    "backup_password": "str?",
     "log_level": "list(debug|info|warning|error)?"
   }
 }

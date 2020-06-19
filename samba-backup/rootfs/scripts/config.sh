@@ -36,8 +36,8 @@ function get-config {
     TRIGGER_DAYS=$(bashio::config 'trigger_days')
     EXCLUDE_ADDONS=$(bashio::config 'exclude_addons')
     EXCLUDE_FOLDERS=$(bashio::config 'exclude_folders')
-    BACKUP_NAME=$(bashio::config 'backup_name')
-    BACKUP_PWD=$(bashio::config 'backup_password')
+    bashio::config.exists 'backup_name' && BACKUP_NAME=$(bashio::config 'backup_name') || BACKUP_NAME=""
+    bashio::config.exists 'backup_password' && BACKUP_PWD=$(bashio::config 'backup_password') || BACKUP_PWD=""
 
     if [[ -n "$username" && -n "$password" ]]; then
         SMB="smbclient -U ${username}%${password} //${host}/${share} 2>&1"
