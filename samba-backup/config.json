@@ -11,6 +11,7 @@
   "hassio_role": "manager",
   "stdin": true,
   "map": ["backup:rw"],
+  "services": ["mqtt:want"],
   "image": "thomasmauerer/samba-backup-{arch}",
   "options": {
     "host": null,

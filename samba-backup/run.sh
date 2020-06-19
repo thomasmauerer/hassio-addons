@@ -17,6 +17,9 @@ BACKUP_NAME=$(bashio::config 'backup_name')
 BACKUP_PWD=$(bashio::config 'backup_password')
 bashio::config.exists 'log_level' && LOG_LEVEL=$(bashio::config 'log_level') || LOG_LEVEL="info"
 
+MQTT_SUPPORT=false
+MQTT_TOPIC="samba_backup/status"
+
 if [[ -n "$USERNAME" && -n "$PASSWORD" ]]; then
     SMB="smbclient -U ${USERNAME}%${PASSWORD} //${HOST}/${SHARE} 2>&1"
 else
@@ -128,6 +131,38 @@ function smb-precheck {
     rm samba-tmp123
 }
 
+function setup-mqtt {
+    local host
+    local username
+    local password
+    local port
+
+    if bashio::services.available "mqtt"; then
+        host=$(bashio::services "mqtt" "host")
+        username=$(bashio::services "mqtt" "username")
+        password=$(bashio::services "mqtt" "password")
+        port=$(bashio::services "mqtt" "port")
+
+        mkdir -p $HOME/.config
+        {
+            echo "-h ${host}"
+            echo "--username ${username}"
+            echo "--pw ${password}"
+            echo "--port ${port}"
+        } > $HOME/.config/mosquitto_pub
+
+        bashio::log.info "Mqtt notifications are published on topic \"${MQTT_TOPIC}\""
+        MQTT_SUPPORT=true
+    else
+        bashio::log.warning "Mqtt broker not found. Notifications are disabled."
+    fi
+}
+
+function publish-state {
+    local state="$1"
+    [ "$MQTT_SUPPORT" = true ] && mosquitto_pub -r -t "$MQTT_TOPIC" -m "$state" || return 0
+}
+
 ###############
 
 
@@ -142,7 +177,6 @@ function run-backup {
     bashio::log.info "Backup finished"
 }
 
-# perform setup stuff
 bashio::log.level "$LOG_LEVEL"
 
 bashio::log.info "Host: ${HOST}"
@@ -153,10 +187,12 @@ bashio::log.info "Keep remote: ${KEEP_REMOTE}"
 bashio::log.info "Trigger time: ${TRIGGER_TIME}"
 [[ "$TRIGGER_TIME" != "manual" ]] && bashio::log.info "Trigger days: $(echo "$TRIGGER_DAYS" | xargs)"
 
-
 # run precheck (will exit on failure)
 smb-precheck
 
+# setup mqtt
+setup-mqtt
+publish-state "IDLE"
 
 # run loop
 while true; do
