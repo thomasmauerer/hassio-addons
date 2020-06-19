@@ -4,7 +4,7 @@ FROM $BUILD_FROM
 ENV LANG C.UTF-8
 
 # Copy script
-COPY run.sh /
+COPY rootfs /
 
 # Setup base
 ARG BUILD_ARCH
