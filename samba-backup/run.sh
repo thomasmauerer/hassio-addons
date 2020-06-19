@@ -19,6 +19,7 @@ bashio::config.exists 'log_level' && LOG_LEVEL=$(bashio::config 'log_level') || 
 
 MQTT_SUPPORT=false
 MQTT_TOPIC="samba_backup/status"
+MQTT_STATUS=(IDLE RUNNING SUCCEEDED FAILED)
 
 if [[ -n "$USERNAME" && -n "$PASSWORD" ]]; then
     SMB="smbclient -U ${USERNAME}%${PASSWORD} //${HOST}/${SHARE} 2>&1"
@@ -63,6 +64,8 @@ function copy-snapshot {
 }
 
 function cleanup-snapshots-local {
+    [ "$KEEP_LOCAL" == "all" ] && return 0
+
     snaps=$(ha snapshots --raw-json | jq -c '.data.snapshots[] | {date,slug,name}' | sort -r)
     bashio::log.debug "$snaps"
 
@@ -74,6 +77,8 @@ function cleanup-snapshots-local {
 }
 
 function cleanup-snapshots-remote {
+    [ "$KEEP_REMOTE" == "all" ] && return 0
+
     # read all tar files that match the snapshot name pattern and sort them
     input="$($SMB -c "cd ${TARGET_DIR}; ls")"
     snaps="$(echo "$input" | grep -E '\<[0-9a-f]{8}\.tar\>' | while read slug _ _ _ a b c d; do
@@ -120,14 +125,17 @@ function run-and-log {
 
 function smb-precheck {
     # check if we can access the share at all
-    run-and-log "${SMB} -c \"exit\"" || { bashio::log.fatal "Cannot access share. Please check your config."; exit 1; }
+    run-and-log "${SMB} -c \"exit\"" \
+        || { bashio::log.fatal "Cannot access share. Please check your config."; publish-state "${MQTT_STATUS[3]}"; exit 1; }
 
     # check if the target directory exists
-    run-and-log "${SMB} -c \"cd ${TARGET_DIR}\"" || { bashio::log.fatal "Target directory does not exist. Please check your config."; exit 1; }
+    run-and-log "${SMB} -c \"cd ${TARGET_DIR}\"" \
+        || { bashio::log.fatal "Target directory does not exist. Please check your config."; publish-state "${MQTT_STATUS[3]}"; exit 1; }
 
     # check if we have write permissions
     touch samba-tmp123
-    run-and-log "${SMB} -c \"cd ${TARGET_DIR}; put samba-tmp123; rm samba-tmp123\"" || { bashio::log.fatal "Missing write permissions. Please check your share settings."; exit 1; }
+    run-and-log "${SMB} -c \"cd ${TARGET_DIR}; put samba-tmp123; rm samba-tmp123\"" \
+        || { bashio::log.fatal "Missing write permissions. Please check your share settings."; publish-state "${MQTT_STATUS[3]}"; exit 1; }
     rm samba-tmp123
 }
 
@@ -170,15 +178,20 @@ function publish-state {
 
 function run-backup {
     bashio::log.info "Backup running ..."
-    create-snapshot
-    copy-snapshot
-    [ "$KEEP_LOCAL" != "all" ] && cleanup-snapshots-local
-    [ "$KEEP_REMOTE" != "all" ] && cleanup-snapshots-remote
+    publish-state "${MQTT_STATUS[1]}"
+
+    # run entire backup steps
+    create-snapshot && copy-snapshot && cleanup-snapshots-local && cleanup-snapshots-remote \
+        && { publish-state "${MQTT_STATUS[2]}"; sleep 10; } \
+        || { publish-state "${MQTT_STATUS[3]}"; exit 1; }
+
     bashio::log.info "Backup finished"
+    publish-state "${MQTT_STATUS[0]}"
 }
 
-bashio::log.level "$LOG_LEVEL"
 
+# setup logging
+bashio::log.level "$LOG_LEVEL"
 bashio::log.info "Host: ${HOST}"
 bashio::log.info "Share: ${SHARE}"
 bashio::log.info "Target Dir: ${TARGET_DIR}"
@@ -187,12 +200,12 @@ bashio::log.info "Keep remote: ${KEEP_REMOTE}"
 bashio::log.info "Trigger time: ${TRIGGER_TIME}"
 [[ "$TRIGGER_TIME" != "manual" ]] && bashio::log.info "Trigger days: $(echo "$TRIGGER_DAYS" | xargs)"
 
-# run precheck (will exit on failure)
-smb-precheck
-
 # setup mqtt
 setup-mqtt
-publish-state "IDLE"
+publish-state "${MQTT_STATUS[0]}"
+
+# run precheck (will exit on failure)
+smb-precheck
 
 # run loop
 while true; do
