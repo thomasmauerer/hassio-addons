@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3
+
+- Add mqtt support
+- Publish current status via mqtt
+
 ## 2.2
 
 - Use dedicated log functions
