@@ -75,14 +75,37 @@ Maybe you want some advanced trigger based on a specific Home Assistant event? N
 1. Set `trigger_time` to *manual*
 2. Include the following in your automation
 ```yaml
-  service: hassio.addon_stdin
-  data:
-    addon: 15d21743_samba_backup
-    input: trigger
+service: hassio.addon_stdin
+data:
+  addon: 15d21743_samba_backup
+  input: trigger
 ```
+
+### Status notifications
+
+This add-on will automatically publish its current status via mqtt on topic `samba_backup/status` if a mqtt broker is present on your device. You can install the `Mosquitto broker` add-on for example. Note that this feature does not work with external brokers. The status will be one of the following:
+
+- `IDLE`: Samba Backup is waiting for the trigger
+- `RUNNING`: A backup is currently in progress
+- `SUCCEEDED`: The backup was successful
+- `FAILED`: The backup was not successful
+
+You can use this information in Home Assistant. For example you could send out a notification if a backup failed. Just configure a mqtt sensor and use it in an automation.
+
+```yaml
+sensor:
+- platform: mqtt
+  name: "Samba Backup"
+  state_topic: "samba_backup/status"
+```
+Note that a failed backup will also exit the entire add-on. Please check the logs in that case and restart the add-on.
 
 ## Credits
 This add-on is inspired by [hassio-remote-backup](https://github.com/overkill32/hassio-remote-backup), but does not require a ssh connection and also offers more features.
+
+## Want to contribute?
+
+Any kind of help or useful input/feedback is appreciated! If you want to create a pull request, please create it against the `dev` branch. You can also check the [forum thread](https://community.home-assistant.io/t/samba-backup-create-and-store-snapshots-on-a-samba-share/199471) of this add-on for infos and discussions.
 
 [aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
