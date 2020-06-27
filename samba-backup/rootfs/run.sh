@@ -33,16 +33,15 @@ smb-precheck
 
 # run program loop
 while true; do
-    if [[ "$TRIGGER_TIME" == "manual" ]]; then
+    current_date=$(date +'%a %H:%M')
+    # do we have to run it now?
+    if [[ "$TRIGGER_DAYS" =~ "${current_date:0:3}" && "$current_date" =~ "$TRIGGER_TIME" ]]; then
+        run-backup
+    else
         # read from STDIN
         read -r input
         input=$(echo "$input" | jq -r .)
         [[ "$input" == "trigger" ]] && run-backup
-    else
-        # do we have to run it now?
-        current_date=$(date +'%a %H:%M')
-        [[ "$TRIGGER_DAYS" =~ "${current_date:0:3}" && "$current_date" =~ "$TRIGGER_TIME" ]] && run-backup
-
-        sleep 60
     fi
+    sleep 60
 done
