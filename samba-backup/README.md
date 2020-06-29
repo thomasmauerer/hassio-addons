@@ -14,7 +14,7 @@ This add-on lets you automatically create Home Assistant snapshots and store the
 
 1. Navigate in your Home Assistant frontend to **Supervisor** -> **Add-on Store** and add this URL as an additional repository: `https://github.com/thomasmauerer/hassio-addons`
 2. Find the "Samba Backup" add-on and click the "INSTALL" button.
-3. Configure the add-on and click on "START" and/or use it in an automation.
+3. Configure the add-on and click on "START".
 
 ## Configuration
 
@@ -70,7 +70,7 @@ _Example_: "{type} Snapshot {version} {date}" might end up as "Full Snapshot 0.1
 
 ### What if the supported triggers do not suit my needs?
 
-Maybe you want some advanced trigger based on a specific Home Assistant event? No problem, you can still create your own Home Assistant automation to trigger this add-on. You just have to do two things:
+Maybe you want some advanced trigger based on a specific Home Assistant event instead of a fixed time schedule? No problem, you can still create your own Home Assistant automation to trigger this add-on. You just have to do two things:
 
 1. Set `trigger_time` to *manual*
 2. Include the following in your automation
@@ -83,7 +83,14 @@ data:
 
 ### Status notifications
 
-This add-on will automatically publish its current status via mqtt on topic `samba_backup/status` if a mqtt broker is present on your device. You can install the `Mosquitto broker` add-on for example. Note that this feature does not work with external brokers. The status will be one of the following:
+This add-on will automatically publish its current status via mqtt on topic `samba_backup/status` if a mqtt broker is present on your device. You can install the `Mosquitto broker` add-on for example. Note that this feature does currently not work with external brokers! If you are using an Access Control List, make sure to add the following two lines. Otherwise you won't receive anything on the mqtt topic:
+
+```
+user addons
+topic readwrite samba_backup/#
+```
+
+The status will be one of the following:
 
 - `IDLE`: Samba Backup is waiting for the trigger
 - `RUNNING`: A backup is currently in progress
