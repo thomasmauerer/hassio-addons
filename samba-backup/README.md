@@ -72,9 +72,10 @@ _Example_: "{type} Snapshot {version} {date}" might end up as "Full Snapshot 0.1
 
 Maybe you want some advanced trigger based on a specific Home Assistant event instead of a fixed time schedule? No problem, you can still create your own Home Assistant automation to trigger this add-on. You just have to do two things:
 
-1. Set `trigger_time` to *manual*
-2. Include the following in your automation
-```yaml
+1. Set `trigger_time` to `manual`
+2. Include the following in your automation.yaml
+
+```
 service: hassio.addon_stdin
 data:
   addon: 15d21743_samba_backup
