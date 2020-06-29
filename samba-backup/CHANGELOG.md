@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4
+
+- Fix config issues with spaces and special characters
+
 ## 2.3
 
 - Add mqtt support
