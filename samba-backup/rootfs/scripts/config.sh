@@ -40,7 +40,7 @@ function get-config {
     bashio::config.exists 'backup_password' && BACKUP_PWD=$(bashio::config 'backup_password') || BACKUP_PWD=""
 
     if [[ -n "$username" && -n "$password" ]]; then
-        SMB="smbclient -U ${username}%${password} \"//${host}/${share}\" 2>&1"
+        SMB="smbclient -U \"${username}\"%\"${password}\" \"//${host}/${share}\" 2>&1"
     else
         SMB="smbclient -N \"//${host}/${share}\" 2>&1"
     fi

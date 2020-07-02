@@ -40,7 +40,7 @@ function create-snapshot {
 function copy-snapshot {
     cd /backup
     bashio::log.info "Copying snapshot ${SLUG} to share"
-    run-and-log "${SMB} -c \"cd \\\"${TARGET_DIR}\\\"; put ${SLUG}\""
+    run-and-log "${SMB} -c 'cd \"${TARGET_DIR}\"; put ${SLUG}'"
 }
 
 # ------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ function cleanup-snapshots-remote {
     [ "$KEEP_REMOTE" == "all" ] && return 0
 
     # read all tar files that match the snapshot name pattern and sort them
-    input="$(eval $SMB '-c "cd \"${TARGET_DIR}\"; ls"')"
+    input="$(eval "${SMB} -c 'cd \"${TARGET_DIR}\"; ls'")"
     snaps="$(echo "$input" | grep -E '\<[0-9a-f]{8}\.tar\>' | while read slug _ _ _ a b c d; do
         theDate=$(echo "$a $b $c $d" | xargs -i date +'%Y-%m-%d %H:%M' -d "{}")
         echo "$theDate $slug"
@@ -81,6 +81,6 @@ function cleanup-snapshots-remote {
 
     echo "$snaps" | tail -n +$(($KEEP_REMOTE + 1)) | while read _ _ slug; do
         bashio::log.info "Deleting ${slug} on share"
-        run-and-log "${SMB} -c \"cd \\\"${TARGET_DIR}\\\"; rm ${slug}\""
+        run-and-log "${SMB} -c 'cd \"${TARGET_DIR}\"; rm ${slug}'"
     done
 }
