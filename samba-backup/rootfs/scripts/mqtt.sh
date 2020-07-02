@@ -1,7 +1,6 @@
 #!/usr/bin/env bashio
 
 declare MQTT_SUPPORT=false
-declare MQTT_TOPIC="samba_backup/status"
 declare MQTT_STATUS=(IDLE RUNNING SUCCEEDED FAILED)
 
 
@@ -14,7 +13,19 @@ function setup-mqtt {
     local password
     local port
 
-    if bashio::services.available "mqtt"; then
+    if [ -n "$MQTT_HOST" ]; then
+        mkdir -p $HOME/.config
+        {
+            echo "-h ${MQTT_HOST}"
+            [ -n "$MQTT_USERNAME" ] && echo "--username ${MQTT_USERNAME}"
+            [ -n "$MQTT_PASSWORD" ] && echo "--pw ${MQTT_PASSWORD}"
+            [ -n "$MQTT_PORT" ] && echo "--port ${MQTT_PORT}"
+        } > $HOME/.config/mosquitto_pub
+
+        MQTT_SUPPORT=true
+        bashio::log.info "Using mqtt configuration for \"${MQTT_HOST}\" - topic is \"${MQTT_TOPIC}/#\""
+
+    elif bashio::services.available "mqtt"; then
         host=$(bashio::services "mqtt" "host")
         username=$(bashio::services "mqtt" "username")
         password=$(bashio::services "mqtt" "password")
@@ -29,9 +40,10 @@ function setup-mqtt {
         } > $HOME/.config/mosquitto_pub
 
         MQTT_SUPPORT=true
-        bashio::log.info "Mqtt notifications are published on topic \"${MQTT_TOPIC}\""
+        bashio::log.info "Found local mqtt broker - topic is \"${MQTT_TOPIC}/#\""
+
     else
-        bashio::log.warning "Mqtt broker not found. Notifications are disabled."
+        bashio::log.warning "No Mqtt broker found. Notifications are disabled."
     fi
 }
 
@@ -43,5 +55,5 @@ function setup-mqtt {
 # ------------------------------------------------------------------------------
 function publish-status {
     local status="$1"
-    [ "$MQTT_SUPPORT" = true ] && mosquitto_pub -r -t "$MQTT_TOPIC" -m "$status" || return 0
+    [ "$MQTT_SUPPORT" = true ] && mosquitto_pub -r -t "$MQTT_TOPIC/status" -m "$status" || return 0
 }

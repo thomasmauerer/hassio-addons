@@ -40,6 +40,11 @@
     "exclude_folders": ["str"],
     "backup_name": "str?",
     "backup_password": "str?",
-    "log_level": "list(debug|info|warning|error)?"
+    "log_level": "list(debug|info|warning|error)?",
+    "mqtt_host": "str?",
+    "mqtt_username": "str?",
+    "mqtt_password": "str?",
+    "mqtt_port": "str?",
+    "mqtt_topic": "str?"
   }
 }
