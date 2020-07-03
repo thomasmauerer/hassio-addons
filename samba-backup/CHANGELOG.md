@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.5
+
+- Add support for external mqtt brokers
+- Fix incorrect escaped user input
+
 ## 2.4
 
 - Fix config issues with spaces and special characters
