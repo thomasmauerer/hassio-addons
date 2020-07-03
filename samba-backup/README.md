@@ -20,24 +20,8 @@ This add-on lets you automatically create Home Assistant snapshots and store the
 
 The `host` and the `share` parameters are always required. If you do not specify any username and password, the Samba share has to be configured to allow guest access for this to work.
 
-|Parameter|Required|Description|
-|---------|--------|-----------|
-|`host`|Yes|The hostname/URL of the Samba share.|
-|`share`|Yes|The name of the Samba share.|
-|`target_dir`|No|The target directory on the Samba share. If not specified the snapshots will be stored in the root directory.|
-|`username`|No|The username to access the Samba share.|
-|`password`|No|The password to access the Samba share.|
-|`keep_local`|Yes|The number of local snapshots to be preserved. Set `all` if you do not want to delete any snapshots. Note that this will also delete snapshots that were not created with this add-on.|
-|`keep_remote`|Yes|The number of snapshots to be preserved on the Samba share. Set `all` if you do not want to delete any snapshots.|
-|`trigger_time`|Yes|The time when to automatically trigger a backup. See below for advanced options.|
-|`trigger_days`|Yes|The days on which a backup will be triggered.|
-|`exclude_addons`|No|The slugs of add-ons to exclude in the snapshot. This will trigger a partial snapshot if specified. You can find out the correct slugs by clicking on an installed add-on and looking at the URL e.g. `core_ssh`.|
-|`exclude_folders`|No|The folders to exclude in the snapshot. This will trigger a partial snapshot if specified. Possible values are `homeassistant`, `ssl`, `share` and `addons/local`.|
-|`backup_name`|No|The custom name for the snapshots. See below for advanced options.|
-|`backup_password`|No|If specified the snapshots will be password-protected.|
-|`log_level`|No|Control the verbosity of log output produced by this add-on. Possible values are `debug`, `info` (default), `warning` and `error`.|
-
 _Example configuration_:
+
 ```json
 {
   "host": "192.168.178.100",
@@ -51,29 +35,51 @@ _Example configuration_:
   "trigger_days": ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
   "exclude_addons": ["core_ssh", "core_duckdns"],
   "exclude_folders": ["share"],
-  "backup_name": "{type} Snapshot (Samba Backup) {date}",
-  "backup_password": "my-$tr0nG-pwd",
-  "log_level": "debug"
+  "backup_name": "{type} Snapshot (Samba Backup) {date}"
 }
 ```
 
-### What if I don't like the names of the snapshots?
+**Note**: _This is just an example, don't copy and paste it! Create your own!_
 
-No problem, you can customize the names with the `backup_name` variable. You can either use a fixed text or include the following name patterns which will automatically be converted to its real values.
+### Option: `host`
 
-- `{type}`: Full or Partial
-- `{version}`: The current version of Home Assistant
-- `{date}`: The current date and timestamp
+The hostname/URL of the Samba share.
 
-_Example_: "{type} Snapshot {version} {date}" might end up as "Full Snapshot 0.110.4 2020-06-05 12:00"
+### Option: `share`
 
+The name of the Samba share.
 
-### What if the supported triggers do not suit my needs?
+### Option: `target_dir`
 
-Maybe you want some advanced trigger based on a specific Home Assistant event instead of a fixed time schedule? No problem, you can still create your own Home Assistant automation to trigger this add-on. You just have to do two things:
+The target directory on the Samba share in which the snapshots will be stored. If not specified the snapshots will be stored in the root directory.
 
-1. Set `trigger_time` to *manual*
+**Note**: _The directory must exist and write permissions must be granted._
+
+### Option: `username`
+
+The username to access the Samba share.
+
+### Option: `password`
+
+The password to access the Samba share.
+
+### Option: `keep_local`
+
+The number of local snapshots to be preserved. Set `all` if you do not want to delete any snapshots.
+
+**Note**: _Snapshots that were not created with this add-on will be deleted as well._
+
+### Option: `keep_remote`
+
+The number of snapshots to be preserved on the Samba share. Set `all` if you do not want to delete any snapshots.
+
+### Option: `trigger_time`
+
+The time at which a backup will be triggered. If a pure time-based schedule does not suit your needs, you can also write your own Home Assistant automation to trigger this add-on. You just have to do two things:
+
+1. Set `trigger_time` to `manual`
 2. Include the following in your automation
+
 ```yaml
 service: hassio.addon_stdin
 data:
@@ -81,14 +87,74 @@ data:
   input: trigger
 ```
 
-### Status notifications
+### Option: `trigger_days`
 
-This add-on will automatically publish its current status via mqtt on topic `samba_backup/status` if a mqtt broker is present on your device. You can install the `Mosquitto broker` add-on for example. Note that this feature does currently not work with external brokers! If you are using an Access Control List, make sure to add the following two lines. Otherwise you won't receive anything on the mqtt topic:
+The days on which a backup will be triggered. If `trigger_time` is set to `manual` this parameter will not have any effect.
+
+### Option: `exclude_addons`
+
+The slugs of add-ons to exclude in the snapshot. This will trigger a partial snapshot if specified. You can find out the correct slugs by clicking on an installed add-on and looking at the URL e.g. `core_ssh`.
+
+### Option: `exclude_folders`
+
+The folders to exclude in the snapshot. This will trigger a partial snapshot if specified. Possible values are `homeassistant`, `ssl`, `share` and `addons/local`.
+
+### Option: `backup_name`
+
+The custom name for the snapshots. You can either use a fixed text or include the following name patterns which will automatically be converted to its real values.
+
+- `{type}`: Full or Partial
+- `{version}`: The current version of Home Assistant
+- `{date}`: The current date and timestamp
+
+_Example_: "{type} Snapshot {version} {date}" might end up as "Full Snapshot 0.110.4 2020-06-05 12:00"
+
+**Note**: _This only affects the snapshot names, not the file names itself._
+
+### Option: `backup_password`
+
+If specified the snapshots will be password-protected.
+
+### Option: `log_level`
+
+Controls the verbosity of log output produced by this add-on. Possible values are `debug`, `info` (default), `warning` and `error`.
+
+### Option: `mqtt_host`
+
+If using an external mqtt broker, the hostname/URL of the broker. See [Status Notifications](#status-notifications) for additional infos.
+
+**Note**: _Do not set this option if you want to use the (on-device) Mosquitto broker addon._
+
+### Option: `mqtt_username`
+
+If using an external mqtt broker, the username to authenticate with the broker.
+
+### Option: `mqtt_password`
+
+If using an external mqtt broker, the password to authenticate with the broker.
+
+### Option: `mqtt_port`
+
+If using an external mqtt broker, the port of the broker. If not specified the default port 1883 will be used.
+
+### Option: `mqtt_topic`
+
+The topic to which status updates will be published. You can only control the root topic with this option, the subtopic is fixed!
+
+_Example_: samba_backup/status: "samba_backup" is the root topic, whereas "status" is the subtopic.
+
+
+### Status Notifications
+
+This add-on will (optionally) publish its current status via mqtt on topic `samba_backup/status`. The recommended way of setting this up is to install the official Mosquitto broker add-on. If you are using an Access Control List, make sure to add the following two lines. Otherwise you won't receive anything on the mqtt topic. No additional configuration is required!
 
 ```
 user addons
 topic readwrite samba_backup/#
 ```
+
+Auto-configuration will **not work** if you use an external mqtt broker instead of the Mosquitto add-on. In this case you have to specify the mqtt configuration options as documented above.
+
 
 The status will be one of the following:
 
@@ -97,7 +163,7 @@ The status will be one of the following:
 - `SUCCEEDED`: The backup was successful
 - `FAILED`: The backup was not successful
 
-You can use this information in Home Assistant. For example you could send out a notification if a backup failed. Just configure a mqtt sensor and use it in an automation.
+You can use this information in Home Assistant, e.g. to send out a notification if a backup failed. Just configure a mqtt sensor and use it in an automation.
 
 ```yaml
 sensor:
@@ -105,7 +171,8 @@ sensor:
   name: "Samba Backup"
   state_topic: "samba_backup/status"
 ```
-Note that a failed backup will also exit the entire add-on. Please check the logs in that case and restart the add-on.
+
+**Note**: _A failed backup will also exit the entire add-on. Please check the logs in that case and restart the add-on._
 
 ## Credits
 This add-on is inspired by [hassio-remote-backup](https://github.com/overkill32/hassio-remote-backup), but does not require a ssh connection and also offers more features.
