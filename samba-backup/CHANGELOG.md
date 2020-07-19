@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.6
+
+- Fix config issues with dollar signs
+
 ## 2.5
 
 - Add support for external mqtt brokers
