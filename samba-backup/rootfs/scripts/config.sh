@@ -29,10 +29,10 @@ function get-config {
     local username
     local password
 
-    host=$(bashio::config 'host')
-    share=$(bashio::config 'share')
-    username=$(bashio::config 'username')
-    password=$(bashio::config 'password')
+    host=$(bashio::config 'host' | escape-input)
+    share=$(bashio::config 'share' | escape-input)
+    username=$(bashio::config 'username' | escape-input)
+    password=$(bashio::config 'password' | escape-input)
 
     TARGET_DIR=$(bashio::config 'target_dir')
     KEEP_LOCAL=$(bashio::config 'keep_local')
@@ -69,4 +69,20 @@ function get-config {
     [[ "$TRIGGER_TIME" != "manual" ]] && bashio::log.info "Trigger days: $(echo "$TRIGGER_DAYS" | xargs)"
 
     return 0
+}
+
+
+# ------------------------------------------------------------------------------
+# Escape input given by the user.
+#
+# Returns the escaped string on stdout
+# ------------------------------------------------------------------------------
+function escape-input {
+    local input
+    read -r input
+
+    # escape the evil dollar sign
+    input=${input//$/\\$}
+
+    echo "$input"
 }
