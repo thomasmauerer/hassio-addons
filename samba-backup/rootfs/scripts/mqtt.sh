@@ -21,6 +21,7 @@ function setup-mqtt {
             [ -n "$MQTT_PASSWORD" ] && echo "--pw ${MQTT_PASSWORD}"
             [ -n "$MQTT_PORT" ] && echo "--port ${MQTT_PORT}"
         } > $HOME/.config/mosquitto_pub
+        cp $HOME/.config/mosquitto_pub $HOME/.config/mosquitto_sub
 
         MQTT_SUPPORT=true
         bashio::log.info "Using mqtt configuration for \"${MQTT_HOST}\" - topic is \"${MQTT_TOPIC}/#\""
@@ -38,6 +39,7 @@ function setup-mqtt {
             echo "--pw ${password}"
             echo "--port ${port}"
         } > $HOME/.config/mosquitto_pub
+        cp $HOME/.config/mosquitto_pub $HOME/.config/mosquitto_sub
 
         MQTT_SUPPORT=true
         bashio::log.info "Found local mqtt broker - topic is \"${MQTT_TOPIC}/#\""
