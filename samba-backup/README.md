@@ -75,17 +75,7 @@ The number of snapshots to be preserved on the Samba share. Set `all` if you do 
 
 ### Option: `trigger_time`
 
-The time at which a backup will be triggered. If a pure time-based schedule does not suit your needs, you can also write your own Home Assistant automation to trigger this add-on. You just have to do two things:
-
-1. Set `trigger_time` to `manual`
-2. Include the following in your automation
-
-```yaml
-service: hassio.addon_stdin
-data:
-  addon: 15d21743_samba_backup
-  input: trigger
-```
+The time at which a backup will be triggered. The input must be given in format 'HH:MM', e.g. '04:00' which means 4 am. You can also use your own Home Assistant automations to trigger a backup - see [Manual Triggers](#manual-triggers) for more information. If you want to disable the time-based schedule completely, set the option to `manual`.
 
 ### Option: `trigger_days`
 
@@ -174,8 +164,58 @@ sensor:
 
 **Note**: _A failed backup will also exit the entire add-on. Please check the logs in that case and restart the add-on._
 
-## Credits
-This add-on is inspired by [hassio-remote-backup](https://github.com/overkill32/hassio-remote-backup), but does not require a ssh connection and also offers more features.
+
+### Manual Triggers
+
+Apart from a time-based schedule, this add-on also supports manual triggers from an Home Assistant automation or script. If you only want manual triggers, you can set `trigger_time` to `manual`.
+
+#### STDIN Trigger
+
+The recommended way to trigger a manual backup is by using the `hassio.addon_stdin` service call in a script:
+
+```yaml
+service: hassio.addon_stdin
+data:
+  addon: 15d21743_samba_backup
+  input: trigger
+```
+
+The configuration options that directly affect the snapshot creation are overwritable for a single run: `exclude_addons`, `exclude_folders`, `backup_name` and `backup_password`. To overwrite any of these options, you have to use an extended syntax in json format - `command` has to be `trigger`. See the following example:
+
+```yaml
+service: hassio.addon_stdin
+data:
+  addon: 15d21743_samba_backup
+  input:
+    command: trigger
+    backup_name: My overwritten snapshot name {date}
+    exclude_addons: [core_mariadb, core_deconz]
+```
+
+#### MQTT Trigger
+
+**NOTE**: The mqtt trigger is only active if mqtt is configured correctly for this add-on.
+
+You can also use mqtt to trigger a backup. Just send `trigger` to topic `samba_backup/trigger` or use the extended trigger the same way as described in [STDIN Trigger](stdin-trigger). Be careful with the syntax! Mqtt is a bit tricky to configure when it comes to sending valid json. Just wrap the entire payload in single quotation marks and use double quotation marks on every entry. See the example below:
+
+```yaml
+service: mqtt_publish
+data:
+  payload: 'trigger'
+  topic: 'samba_backup/trigger'
+```
+
+**Note**: _Simple trigger_
+
+```yaml
+service: mqtt_publish
+data:
+  payload: '{"command": "trigger", "exclude_addons": ["core_mariadb", "core_deconz"], "backup_name": "My overwritten snapshot name {date}"}'
+  topic: 'samba_backup/trigger'
+```
+
+**Note**: _Extended trigger_
+
 
 ## Want to contribute?
 
