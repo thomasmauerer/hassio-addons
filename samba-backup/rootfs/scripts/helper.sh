@@ -43,3 +43,20 @@ function run-and-log {
         && bashio::log.debug "$result" \
         || { bashio::log.warning "$result"; return 1; }
 }
+
+# ------------------------------------------------------------------------------
+# Checks if input is an extended trigger.
+#
+# Arguments
+#  $1 The input to check
+#
+# Returns 0 (true) or 1 (false)
+# ------------------------------------------------------------------------------
+function is-extended-trigger {
+    local input
+    local cmd
+
+    input=$(echo "$1" | jq . 2>/dev/null) || { bashio::log.warning "Input is not valid"; return 1; }
+    cmd=$(echo "$input" | jq -r '.command')
+    [[ "$cmd" == "trigger" ]] && return 0 || return 1
+}

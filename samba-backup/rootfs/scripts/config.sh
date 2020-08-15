@@ -71,7 +71,6 @@ function get-config {
     return 0
 }
 
-
 # ------------------------------------------------------------------------------
 # Escape input given by the user.
 #
@@ -85,4 +84,44 @@ function escape-input {
     input=${input//$/\\$}
 
     echo "$input"
+}
+
+# ------------------------------------------------------------------------------
+# Overwrite the snapshot parameters.
+#
+# Arguments
+#  $1 The json input string
+# ------------------------------------------------------------------------------
+function overwrite-params {
+    local input="$1"
+    local addons
+    local folders
+    local name
+    local password
+
+    addons=$(echo "$input" | jq '.exclude_addons[]' 2>/dev/null)
+    [[ "$addons" != null  ]] && EXCLUDE_ADDONS="$addons"
+
+    folders=$(echo "$input" | jq '.exclude_folders[]' 2>/dev/null)
+    [[ "$folders" != null  ]] && EXCLUDE_FOLDERS="$folders"
+
+    name=$(echo "$input" | jq -r '.backup_name')
+    [[ "$name" != null  ]] && BACKUP_NAME="$name"
+
+    password=$(echo "$input" | jq -r '.backup_password')
+    [[ "$password" != null  ]] && BACKUP_PWD="$password"
+
+    return 0
+}
+
+# ------------------------------------------------------------------------------
+# Restore the original snapshot parameters.
+# ------------------------------------------------------------------------------
+function restore-params {
+    EXCLUDE_ADDONS=$(bashio::config 'exclude_addons')
+    EXCLUDE_FOLDERS=$(bashio::config 'exclude_folders')
+    bashio::config.exists 'backup_name' && BACKUP_NAME=$(bashio::config 'backup_name') || BACKUP_NAME=""
+    bashio::config.exists 'backup_password' && BACKUP_PWD=$(bashio::config 'backup_password') || BACKUP_PWD=""
+
+    return 0
 }

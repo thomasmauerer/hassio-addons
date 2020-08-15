@@ -63,7 +63,13 @@ if [ "$MQTT_SUPPORT" = true ]; then
         while true; do
             mqtt_input=$(mosquitto_sub -t "$MQTT_TOPIC/trigger" -C 1)
             bashio::log.debug "Mqtt message received: ${mqtt_input}"
-            [[ "$mqtt_input" == "trigger" ]] && run-backup
+
+            if [[ "$mqtt_input" == "trigger" ]]; then
+                run-backup
+            elif is-extended-trigger "$mqtt_input"; then
+                bashio::log.info "Running backup with customized parameters"
+                overwrite-params "$mqtt_input" && run-backup && restore-params
+            fi
         done
     } &
 fi
@@ -74,5 +80,11 @@ while true; do
     read -r input
     bashio::log.debug "Stdin input received: ${input}"
     input=$(echo "$input" | jq -r .)
-    [[ "$input" == "trigger" ]] && run-backup
+
+    if [[ "$input" == "trigger" ]]; then
+        run-backup
+    elif is-extended-trigger "$input"; then
+        bashio::log.info "Running backup with customized parameters"
+        overwrite-params "$input" && run-backup && restore-params
+    fi
 done
