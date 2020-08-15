@@ -196,7 +196,7 @@ data:
 
 **NOTE**: The mqtt trigger is only active if mqtt is configured correctly for this add-on.
 
-You can also use mqtt to trigger a backup. Just send `trigger` to topic `samba_backup/trigger` or use the extended trigger the same way as described in [STDIN Trigger](stdin-trigger). Be careful with the syntax! Mqtt is a bit tricky to configure when it comes to sending valid json. Just wrap the entire payload in single quotation marks and use double quotation marks on every entry. See the example below:
+You can also use mqtt to trigger a backup. Just send `trigger` to topic `samba_backup/trigger` or use the extended trigger the same way as described in [STDIN Trigger](#stdin-trigger). Be careful with the syntax! Mqtt is a bit tricky to configure when it comes to sending valid json. Just wrap the entire payload in single quotation marks and use double quotation marks on every entry. See the example below:
 
 ```yaml
 service: mqtt_publish
