@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0
+
+- Support multiple triggers at once
+- Introduce mqtt trigger
+- Make configuration options overwritable for manual triggers
+
 ## 2.6
 
 - Fix config issues with dollar signs
