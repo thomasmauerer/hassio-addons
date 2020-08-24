@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1
+
+- Add support for legacy SMB protocols
+
 ## 3.0
 
 - Support multiple triggers at once
