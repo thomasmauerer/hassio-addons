@@ -56,6 +56,8 @@ function get-config {
         SMB="smbclient -N \"//${host}/${share}\" 2>&1"
     fi
 
+    # legacy SMB protocols allowed?
+    bashio::config.true 'compatibility_mode' && SMB="${SMB} --option=\"client min protocol\"=\"NT1\""
 
     # setup logging
     bashio::config.exists 'log_level' && bashio::log.level $(bashio::config 'log_level')

@@ -105,6 +105,10 @@ _Example_: "{type} Snapshot {version} {date}" might end up as "Full Snapshot 0.1
 
 If specified the snapshots will be password-protected.
 
+### Option: `compatibility_mode`
+
+Set this option to `true` if you need to connect to shares that only support old legacy SMB protocols. Note that this option is not recommended, since these protocols are known to be out-dated, insecure and slow.
+
 ### Option: `log_level`
 
 Controls the verbosity of log output produced by this add-on. Possible values are `debug`, `info` (default), `warning` and `error`.
