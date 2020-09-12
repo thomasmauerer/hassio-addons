@@ -39,8 +39,14 @@ function create-snapshot {
 # ------------------------------------------------------------------------------
 function copy-snapshot {
     cd /backup
+
     bashio::log.info "Copying snapshot ${SLUG} to share"
-    run-and-log "${SMB} -c 'cd \"${TARGET_DIR}\"; put ${SLUG}'"
+
+    if ! run-and-log "${SMB} -c 'cd \"${TARGET_DIR}\"; put ${SLUG}'"; then
+        bashio::log.warning "Could not copy snapshot ${SLUG} to share. Trying again ..."
+        sleep 5
+        run-and-log "${SMB} -c 'cd \"${TARGET_DIR}\"; put ${SLUG}'"
+    fi
 }
 
 # ------------------------------------------------------------------------------
