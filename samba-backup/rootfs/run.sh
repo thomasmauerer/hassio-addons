@@ -1,16 +1,11 @@
 #!/usr/bin/env bashio
 
-# The pid of the main process
-# --------------------------
-# if this process dies, s6 will take down the rest and the container will stop
-pid=$$
-# --------------------------
-
 source scripts/config.sh
 source scripts/mqtt.sh
 source scripts/main.sh
 source scripts/helper.sh
 source scripts/precheck.sh
+source scripts/sensor.sh
 
 
 function run-backup {
@@ -19,15 +14,19 @@ function run-backup {
         flock -n -x 200 || { bashio::log.warning "Backup already running. Trigger ignored."; return 0; }
 
         bashio::log.info "Backup running ..."
+        get-current-sensor
         publish-status "${MQTT_STATUS[1]}"
+        update-status "${SAMBA_STATUS[1]}"
 
         # run entire backup steps
         create-snapshot && copy-snapshot && cleanup-snapshots-local && cleanup-snapshots-remote \
-            && { publish-status "${MQTT_STATUS[2]}"; sleep 10; } \
-            || { publish-status "${MQTT_STATUS[3]}"; kill -15 "$pid"; }
+            && { publish-status "${MQTT_STATUS[2]}"; update-sensor "${SAMBA_STATUS[2]}"; } \
+            || { publish-status "${MQTT_STATUS[3]}"; update-sensor "${SAMBA_STATUS[3]}"; }
 
-        bashio::log.info "Backup finished"
+        sleep 10
         publish-status "${MQTT_STATUS[0]}"
+        update-status "${SAMBA_STATUS[0]}"
+        bashio::log.info "Backup finished"
     ) 200>/tmp/samba_backup.lockfile
 }
 
@@ -35,12 +34,22 @@ function run-backup {
 # read in user config
 get-config
 
+# ----- DEPRECATED -----
 # setup mqtt
 setup-mqtt
 publish-status "${MQTT_STATUS[0]}"
+# ----------------------
 
-# run precheck (will exit on failure)
-smb-precheck
+# setup HA sensor
+get-current-sensor
+update-status "${SAMBA_STATUS[0]}"
+
+# run precheck and exit entire addon
+if ! smb-precheck; then
+    publish-status "${MQTT_STATUS[3]}"
+    update-status "${SAMBA_STATUS[3]}"
+    exit 1
+fi
 
 
 # check the time in the background
