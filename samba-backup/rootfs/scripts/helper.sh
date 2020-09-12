@@ -53,10 +53,12 @@ function run-and-log {
 # Returns 0 (true) or 1 (false)
 # ------------------------------------------------------------------------------
 function is-extended-trigger {
-    local input
+    local input=${1}
     local cmd
 
-    input=$(echo "$1" | jq . 2>/dev/null) || { bashio::log.warning "Input is not valid"; return 1; }
-    cmd=$(echo "$input" | jq -r '.command')
-    [[ "$cmd" == "trigger" ]] && return 0 || return 1
+    if cmd=$(echo "$input" | jq -r '.command' 2>/dev/null); then
+        [ "$cmd" = "trigger" ] && return 0
+    fi
+
+    return 1
 }

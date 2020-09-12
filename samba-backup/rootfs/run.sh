@@ -85,13 +85,22 @@ fi
 bashio::log.debug "Starting stdin listener ..."
 while true; do
     read -r input
-    bashio::log.debug "Stdin input received: ${input}"
+    bashio::log.debug "Input received: ${input}"
     input=$(echo "$input" | jq -r .)
 
-    if [[ "$input" == "trigger" ]]; then
+    if [ "$input" = "restore-sensor" ]; then
+        (
+            flock -n -x 200 && restore-sensor || bashio::log.warning "Backup is running. Restore-Sensor not possible."
+        ) 200>/tmp/samba_backup.lockfile
+
+    elif [ "$input" = "trigger" ]; then
         run-backup
+
     elif is-extended-trigger "$input"; then
         bashio::log.info "Running backup with customized parameters"
         overwrite-params "$input" && run-backup && restore-params
+
+    else
+        bashio::log.warning "Received unknown input: ${input}"
     fi
 done

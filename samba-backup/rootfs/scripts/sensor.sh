@@ -113,6 +113,24 @@ function update-sensor {
     return 0
 }
 
+# ------------------------------------------------------------------------------
+# Restore the Home Assistant sensor with the last known values.
+# ------------------------------------------------------------------------------
+function restore-sensor {
+    local data
+    local response
+
+    if [ -f "$STORAGE_FILE" ]; then
+        data=$(cat "$STORAGE_FILE")
+
+        if ! response=$(ha-post-sensor "$data"); then
+            bashio::log.error "Unable to restore sensor ${SENSOR_NAME} in Home Assistant"
+        fi
+    fi
+
+    return 0
+}
+
 
 # ------------------------------------------------------------------------------
 # ----------------------- INTERNAL FUNCTION ------------------------------------
