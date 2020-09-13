@@ -42,7 +42,7 @@ _Example configuration_:
 **Note**: _This is just an example, don't copy and paste it! Create your own!_
 
 
-Please check the **[Documentation](/DOCS.md)** for a complete reference of all configuration options.
+Please check the **[Documentation](/samba-backup/DOCS.md)** for a complete reference of all configuration options.
 
 ## Want to contribute?
 
