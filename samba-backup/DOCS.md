@@ -2,7 +2,7 @@
 
 Create snapshots and store them on a Samba share.
 
-## Configuration
+## Configuration Options
 
 ### Option: `host`
 
@@ -78,7 +78,7 @@ Controls the verbosity of log output produced by this add-on. Possible values ar
 
 ### Option: `mqtt_host`
 
-If using an external mqtt broker, the hostname/URL of the broker. See [Status Notifications](#status-notifications) for additional infos.
+If using an external mqtt broker, the hostname/URL of the broker. See [MQTT Status Notifications](#mqtt-status-notifications) for additional infos.
 
 **Note**: _Do not set this option if you want to use the (on-device) Mosquitto broker addon._
 
@@ -100,8 +100,52 @@ The topic to which status updates will be published. You can only control the ro
 
 _Example_: samba_backup/status: "samba_backup" is the root topic, whereas "status" is the subtopic.
 
+## Home Assistant Sensor
 
-## Status Notifications
+This add-on includes a sensor for Home Assistant which reflects the current status and additionally has some useful statistics within its attributes. No configuration is necessary in order to use the sensor. The name of the sensor is `sensor.samba_backup`.
+
+
+The state of the sensor will be one of the following:
+
+- `IDLE`: Samba Backup is waiting for the trigger
+- `RUNNING`: A backup is currently in progress
+- `SUCCEEDED`: The backup was successful
+- `FAILED`: The backup was not successful
+
+
+The sensor includes the following attributes:
+
+- `backups local`: The current number of snapshots available on the device
+- `backups remote`: The current number of snapshots available on the Samba share
+- `total backups succeeded`: The total number of successful backups made with this add-on
+- `total backups failed`: The total number of failed backups
+- `last backup`: The date of the last successful backup
+
+
+There is a known limitation that the sensor will be unavailable if you restart Home Assistant. This is caused by the way Home Assistant handles sensors which are not backed up by an entity, but instead come from an add-on or AppDaemon. You can easily fix that with an automation that triggers at startup:
+
+
+```yaml
+automation:
+- alias: Restore Samba Backup sensor on startup
+  trigger:
+  - event: start
+    platform: homeassistant
+  condition: []
+  action:
+  - data:
+      addon: 15d21743_samba_backup
+      input: restore-sensor
+    service: hassio.addon_stdin
+  mode: single
+```
+
+_Automation to restore the sensor when Home Assistant restarts_
+
+
+## MQTT Status Notifications
+
+**!!DEPRECATED!! Please switch to the new [Home Assistant Sensor](#home-assistant-sensor).**
 
 This add-on will (optionally) publish its current status via mqtt on topic `samba_backup/status`. The recommended way of setting this up is to install the official Mosquitto broker add-on. If you are using an Access Control List, make sure to add the following two lines. Otherwise you won't receive anything on the mqtt topic. No additional configuration is required!
 
@@ -125,20 +169,16 @@ You can use this information in Home Assistant, e.g. to send out a notification 
 ```yaml
 sensor:
 - platform: mqtt
-  name: "Samba Backup"
+  name: "Samba Backup MQTT Sensor"
   state_topic: "samba_backup/status"
 ```
-
-**Note**: _A failed backup will also exit the entire add-on. Please check the logs in that case and restart the add-on._
 
 
 ## Manual Triggers
 
-Apart from a time-based schedule, this add-on also supports manual triggers from an Home Assistant automation or script. If you only want manual triggers, you can set `trigger_time` to `manual`.
+Apart from a time-based schedule, this add-on also supports manual triggers from a Home Assistant automation or script. If you only want manual triggers, you can set `trigger_time` to `manual`.
 
-### STDIN Trigger
-
-The recommended way to trigger a manual backup is by using the `hassio.addon_stdin` service call in a script:
+The easiest way to trigger a manual backup is by using the `hassio.addon_stdin` service call in a script:
 
 ```yaml
 service: hassio.addon_stdin
@@ -147,7 +187,9 @@ data:
   input: trigger
 ```
 
-The configuration options that directly affect the snapshot creation are overwritable for a single run: `exclude_addons`, `exclude_folders`, `backup_name` and `backup_password`. To overwrite any of these options, you have to use an extended syntax in json format - `command` has to be `trigger`. See the following example:
+_Simple trigger_
+
+The configuration options that directly affect the snapshot creation are overwritable for a single run: `exclude_addons`, `exclude_folders`, `backup_name` and `backup_password`. To overwrite any of these options, you have to use an extended syntax - `command` has to be `trigger`. See the following example:
 
 ```yaml
 service: hassio.addon_stdin
@@ -159,26 +201,4 @@ data:
     exclude_addons: [core_mariadb, core_deconz]
 ```
 
-### MQTT Trigger
-
-**NOTE**: The mqtt trigger is only active if mqtt is configured correctly for this add-on.
-
-You can also use mqtt to trigger a backup. Just send `trigger` to topic `samba_backup/trigger` or use the extended trigger the same way as described in [STDIN Trigger](#stdin-trigger). Be careful with the syntax! Mqtt is a bit tricky to configure when it comes to sending valid json. Just wrap the entire payload in single quotation marks and use double quotation marks on every entry. See the example below:
-
-```yaml
-service: mqtt_publish
-data:
-  payload: 'trigger'
-  topic: 'samba_backup/trigger'
-```
-
-**Note**: _Simple trigger_
-
-```yaml
-service: mqtt_publish
-data:
-  payload: '{"command": "trigger", "exclude_addons": ["core_mariadb", "core_deconz"], "backup_name": "My overwritten snapshot name {date}"}'
-  topic: 'samba_backup/trigger'
-```
-
-**Note**: _Extended trigger_
+_Extended trigger_
