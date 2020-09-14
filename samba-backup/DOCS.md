@@ -38,7 +38,7 @@ The number of snapshots to be preserved on the Samba share. Set `all` if you do 
 
 ### Option: `trigger_time`
 
-The time at which a backup will be triggered. The input must be given in format 'HH:MM', e.g. '04:00' which means 4 am. You can also use your own Home Assistant automations to trigger a backup - see [Manual Triggers](#manual-triggers) for more information. If you want to disable the time-based schedule completely, set the option to `manual`.
+The time at which a backup will be triggered. The input must be given in format 'HH:MM', e.g. '04:00' which means 4 am. You can also use your own Home Assistant automations to trigger a backup - see [Manual Triggers](https://github.com/thomasmauerer/hassio-addons/blob/master/samba-backup/DOCS.md#manual-triggers) for more information. If you want to disable the time-based schedule completely, set the option to `manual`.
 
 ### Option: `trigger_days`
 
@@ -78,7 +78,7 @@ Controls the verbosity of log output produced by this add-on. Possible values ar
 
 ### Option: `mqtt_host`
 
-If using an external mqtt broker, the hostname/URL of the broker. See [MQTT Status Notifications](#mqtt-status-notifications) for additional infos.
+If using an external mqtt broker, the hostname/URL of the broker. See [MQTT Status Notifications](https://github.com/thomasmauerer/hassio-addons/blob/master/samba-backup/DOCS.md#mqtt-status-notifications) for additional infos.
 
 **Note**: _Do not set this option if you want to use the (on-device) Mosquitto broker addon._
 
@@ -145,7 +145,7 @@ _Automation to restore the sensor when Home Assistant restarts_
 
 ## MQTT Status Notifications
 
-**!!DEPRECATED!! Please switch to the new [Home Assistant Sensor](#home-assistant-sensor).**
+**!!DEPRECATED!! Please switch to the new [Home Assistant Sensor](https://github.com/thomasmauerer/hassio-addons/blob/master/samba-backup/DOCS.md#home-assistant-sensor).**
 
 This add-on will (optionally) publish its current status via mqtt on topic `samba_backup/status`. The recommended way of setting this up is to install the official Mosquitto broker add-on. If you are using an Access Control List, make sure to add the following two lines. Otherwise you won't receive anything on the mqtt topic. No additional configuration is required!
 

@@ -42,7 +42,7 @@ _Example configuration_:
 **Note**: _This is just an example, don't copy and paste it! Create your own!_
 
 
-Please check the **[Documentation](/samba-backup/DOCS.md)** for a complete reference of all configuration options.
+Please check the **[Documentation](https://github.com/thomasmauerer/hassio-addons/blob/master/samba-backup/DOCS.md)** for a complete reference of all configuration options.
 
 ## Want to contribute?
 
@@ -53,4 +53,4 @@ Any kind of help or useful input/feedback is appreciated! If you want to create 
 [armhf-shield]: https://img.shields.io/badge/armhf-yes-green.svg
 [armv7-shield]: https://img.shields.io/badge/armv7-yes-green.svg
 [i386-shield]: https://img.shields.io/badge/i386-yes-green.svg
-[version]: https://img.shields.io/badge/version-v3.1-blue.svg
+[version]: https://img.shields.io/badge/version-v4.0-blue.svg
