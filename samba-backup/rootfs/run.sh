@@ -89,9 +89,7 @@ while true; do
     input=$(echo "$input" | jq -r .)
 
     if [ "$input" = "restore-sensor" ]; then
-        (
-            flock -n -x 200 && restore-sensor || bashio::log.warning "Backup is running. Restore-Sensor not possible."
-        ) 200>/tmp/samba_backup.lockfile
+        restore-sensor
 
     elif [ "$input" = "trigger" ]; then
         run-backup
