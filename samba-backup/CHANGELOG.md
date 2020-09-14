@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.0
+
+- Include a Home Assistant sensor for status updates and statistics
+- The add-on will no longer shut down in case of a failed backup
+- MQTT support is now deprecated. Please switch to the new sensor
+- Several minor improvements
+
+**Important**: If you have already a sensor called `Samba Backup` (sensor.samba_backup), please delete or at least rename it!
+
 ## 3.1
 
 - Add support for legacy SMB protocols
