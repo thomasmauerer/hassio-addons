@@ -1,6 +1,6 @@
 {
   "name": "Samba Backup",
-  "version": "dev",
+  "version": "4.0",
   "slug": "samba_backup",
   "description": "Create snapshots and store them on a Samba share",
   "url": "https://github.com/thomasmauerer/hassio-addons/tree/master/samba-backup",
@@ -13,6 +13,7 @@
   "stdin": true,
   "map": ["backup:rw"],
   "services": ["mqtt:want"],
+  "image": "thomasmauerer/samba-backup-{arch}",
   "options": {
     "host": null,
     "share": null,
