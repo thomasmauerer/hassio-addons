@@ -188,7 +188,9 @@ data:
   input:
     command: trigger
     backup_name: My overwritten snapshot name {date}
+    backup_password: some_pwd
     exclude_addons: [core_mariadb, core_deconz]
+    exclude_folders: [ssl]
 ```
 
 _Extended trigger_

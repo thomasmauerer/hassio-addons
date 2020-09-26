@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.1
+
+- Improve and extend SMB pre-checks
+- Update sensor if pre-check fails
+- Remove mqtt listener
+
 ## 4.0
 
 - Include a Home Assistant sensor for status updates and statistics
