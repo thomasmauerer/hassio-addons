@@ -131,12 +131,11 @@ automation:
   trigger:
   - event: start
     platform: homeassistant
-  condition: []
   action:
-  - data:
+  - service: hassio.addon_stdin
+    data:
       addon: 15d21743_samba_backup
       input: restore-sensor
-    service: hassio.addon_stdin
   mode: single
 ```
 
