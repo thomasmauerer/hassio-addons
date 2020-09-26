@@ -45,7 +45,7 @@ update-sensor "${SAMBA_STATUS[0]}"
 # run precheck and exit entire addon
 if ! smb-precheck; then
     publish-status "${MQTT_STATUS[3]}"
-    update-status "${SAMBA_STATUS[3]}"
+    update-sensor "${SAMBA_STATUS[3]}"
     exit 1
 fi
 
