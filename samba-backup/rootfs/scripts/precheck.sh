@@ -6,10 +6,48 @@
 # Returns 1 in case of a failure
 # ------------------------------------------------------------------------------
 function smb-precheck {
+    local result
+    local shares
+
+    # check if the host is reachable
+    if ! run-and-log "ping -c 4 \"${HOST}\""; then
+        bashio::log.fatal "The provided host is unreachable. Please check your config."
+        return 1
+    fi
 
     # check if we can access the share at all
-    if ! run-and-log "${SMB} -c 'exit'"; then
-        bashio::log.fatal "Cannot access share. Please check your config."
+    if ! result=$(eval "${SMB} -c 'exit'"); then
+        bashio::log.warning "$result"
+
+        # SMB1 problem
+        if [[ "$result" =~ "NT_STATUS_CONNECTION_DISCONNECTED" ]]; then
+            bashio::log.fatal "Cannot access share. It seems that your share only supports insecure SMB protocols."
+            bashio::log.fatal "If you want me to connect, please check the \"compatibility_mode\" option. Use at your own risk."
+
+        # share does not exist
+        elif [[ "$result" =~ "NT_STATUS_BAD_NETWORK_NAME" ]]; then
+            bashio::log.fatal "Cannot access share. It seems that your configured share does not exist."
+
+            # try to find out which shares exist
+            if shares=$(eval "${ALL_SHARES}"); then
+                bashio::log.fatal "I found the following shares on your host. Did you mean one of those?"
+                bashio::log.fatal "$shares"
+            fi
+
+        # access denied
+        elif [[ "$result" =~ "NT_STATUS_ACCESS_DENIED" ]]; then
+            bashio::log.fatal "Cannot access share. Access denied. Please check your share permissions."
+
+        # login failed
+        elif [[ "$result" =~ "NT_STATUS_LOGON_FAILURE" ]]; then
+            bashio::log.fatal "Cannot access share. Login failed. Please check your credentials."
+
+        # unknown reason
+        else
+            bashio::log.fatal "Cannot access share. Unknown reason."
+        fi
+
+
         return 1
     fi
 
@@ -26,6 +64,7 @@ function smb-precheck {
         return 1
     fi
     rm samba-tmp123
+
 
     return 0
 }

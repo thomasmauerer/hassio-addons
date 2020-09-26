@@ -1,6 +1,7 @@
 #!/usr/bin/env bashio
 
 # user input variables
+declare HOST
 declare TARGET_DIR
 declare KEEP_LOCAL
 declare KEEP_REMOTE
@@ -16,20 +17,20 @@ declare MQTT_PASSWORD
 declare MQTT_PORT
 declare MQTT_TOPIC
 
-# smbclient command string
+# smbclient command strings
 declare SMB
+declare ALL_SHARES
 
 
 # ------------------------------------------------------------------------------
 # Read and print config.
 # ------------------------------------------------------------------------------
 function get-config {
-    local host
     local share
     local username
     local password
 
-    host=$(bashio::config 'host' | escape-input)
+    HOST=$(bashio::config 'host' | escape-input)
     share=$(bashio::config 'share' | escape-input)
     username=$(bashio::config 'username' | escape-input)
     password=$(bashio::config 'password' | escape-input)
@@ -51,18 +52,21 @@ function get-config {
     bashio::config.exists 'mqtt_topic' && MQTT_TOPIC=$(bashio::config 'mqtt_topic') || MQTT_TOPIC="samba_backup"
 
     if [[ -n "$username" && -n "$password" ]]; then
-        SMB="smbclient -U \"${username}\"%\"${password}\" \"//${host}/${share}\" 2>&1"
+        SMB="smbclient -U \"${username}\"%\"${password}\" \"//${HOST}/${share}\" 2>&1"
+        ALL_SHARES="smbclient -U \"${username}\"%\"${password}\" -L \"//${HOST}\" 2>&1"
     else
-        SMB="smbclient -N \"//${host}/${share}\" 2>&1"
+        SMB="smbclient -N \"//${HOST}/${share}\" 2>&1"
+        ALL_SHARES="smbclient -N -L \"//${HOST}\" 2>&1"
     fi
 
     # legacy SMB protocols allowed?
     bashio::config.true 'compatibility_mode' && SMB="${SMB} --option=\"client min protocol\"=\"NT1\""
+    bashio::config.true 'compatibility_mode' && ALL_SHARES="${ALL_SHARES} --option=\"client min protocol\"=\"NT1\""
 
     # setup logging
     bashio::config.exists 'log_level' && bashio::log.level $(bashio::config 'log_level')
 
-    bashio::log.info "Host: ${host}"
+    bashio::log.info "Host: ${HOST}"
     bashio::log.info "Share: ${share}"
     bashio::log.info "Target Dir: ${TARGET_DIR}"
     bashio::log.info "Keep local: ${KEEP_LOCAL}"
