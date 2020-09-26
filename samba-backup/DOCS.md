@@ -164,15 +164,6 @@ The status will be one of the following:
 - `SUCCEEDED`: The backup was successful
 - `FAILED`: The backup was not successful
 
-You can use this information in Home Assistant, e.g. to send out a notification if a backup failed. Just configure a mqtt sensor and use it in an automation.
-
-```yaml
-sensor:
-- platform: mqtt
-  name: "Samba Backup MQTT Sensor"
-  state_topic: "samba_backup/status"
-```
-
 
 ## Manual Triggers
 

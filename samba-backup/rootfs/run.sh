@@ -63,24 +63,6 @@ if [[ "$TRIGGER_TIME" != "manual" ]]; then
     } &
 fi
 
-# start the mqtt listener in background
-if [ "$MQTT_SUPPORT" = true ]; then
-    {
-        bashio::log.debug "Starting mqtt listener on ${MQTT_TOPIC}/trigger ..."
-        while true; do
-            mqtt_input=$(mosquitto_sub -t "$MQTT_TOPIC/trigger" -C 1)
-            bashio::log.debug "Mqtt message received: ${mqtt_input}"
-
-            if [[ "$mqtt_input" == "trigger" ]]; then
-                run-backup
-            elif is-extended-trigger "$mqtt_input"; then
-                bashio::log.info "Running backup with customized parameters"
-                overwrite-params "$mqtt_input" && run-backup && restore-params
-            fi
-        done
-    } &
-fi
-
 # start the stdin listener in foreground
 bashio::log.debug "Starting stdin listener ..."
 while true; do
