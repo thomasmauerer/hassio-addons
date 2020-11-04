@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.2
+
+- Fix supervisor warnings for partial snapshots
+- Add support to exclude the media folder
+- Bump CLI version to 4.7.0
+
 ## 4.1
 
 - Improve and extend SMB pre-checks
