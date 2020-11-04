@@ -50,7 +50,7 @@ The slugs of add-ons to exclude in the snapshot. This will trigger a partial sna
 
 ### Option: `exclude_folders`
 
-The folders to exclude in the snapshot. This will trigger a partial snapshot if specified. Possible values are `homeassistant`, `ssl`, `share` and `addons/local`.
+The folders to exclude in the snapshot. This will trigger a partial snapshot if specified. Possible values are `homeassistant`, `ssl`, `share`, `addons/local` and `media`.
 
 ### Option: `backup_name`
 

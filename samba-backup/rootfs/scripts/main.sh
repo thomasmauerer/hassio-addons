@@ -21,11 +21,11 @@ function create-snapshot {
     # do we need a partial backup?
     if [[ -n "$EXCLUDE_ADDONS" || -n "$EXCLUDE_FOLDERS" ]]; then
         # include all installed addons that are not listed to be excluded
-        addons=$(ha addons --raw-json | jq -rc '.data.addons[] | select (.installed != null) | .slug')
+        addons=$(ha addons --raw-json | jq -rc '.data.addons[] | select (.installed == true) | .slug')
         for ad in ${addons}; do [[ ! $EXCLUDE_ADDONS =~ "$ad" ]] && args+=("-a" "$ad"); done
 
         # include all folders that are not listed to be excluded
-        folders=(homeassistant ssl share addons/local)
+        folders=(homeassistant ssl share addons/local media)
         for fol in ${folders[@]}; do [[ ! $EXCLUDE_FOLDERS =~ "$fol" ]] && args+=("-f" "$fol"); done
     fi
 
