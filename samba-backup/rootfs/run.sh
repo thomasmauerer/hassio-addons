@@ -1,7 +1,6 @@
 #!/usr/bin/env bashio
 
 source scripts/config.sh
-source scripts/mqtt.sh
 source scripts/main.sh
 source scripts/helper.sh
 source scripts/precheck.sh
@@ -14,17 +13,15 @@ function run-backup {
         flock -n -x 200 || { bashio::log.warning "Backup already running. Trigger ignored."; return 0; }
 
         bashio::log.info "Backup running ..."
-        publish-status "${MQTT_STATUS[1]}"
         get-sensor
         update-sensor "${SAMBA_STATUS[1]}"
 
         # run entire backup steps
         create-snapshot && copy-snapshot && cleanup-snapshots-local && cleanup-snapshots-remote \
-            && { publish-status "${MQTT_STATUS[2]}"; update-sensor "${SAMBA_STATUS[2]}" "ALL"; } \
-            || { publish-status "${MQTT_STATUS[3]}"; update-sensor "${SAMBA_STATUS[3]}" "ALL"; }
+            && update-sensor "${SAMBA_STATUS[2]}" "ALL" \
+            || update-sensor "${SAMBA_STATUS[3]}" "ALL"
 
         sleep 10
-        publish-status "${MQTT_STATUS[0]}"
         update-sensor "${SAMBA_STATUS[0]}"
         bashio::log.info "Backup finished"
     ) 200>/tmp/samba_backup.lockfile
@@ -34,17 +31,12 @@ function run-backup {
 # read in user config
 get-config
 
-# setup mqtt
-setup-mqtt
-publish-status "${MQTT_STATUS[0]}"
-
 # setup Home Assistant sensor
 get-sensor
 update-sensor "${SAMBA_STATUS[0]}"
 
 # run precheck and exit entire addon
 if ! smb-precheck; then
-    publish-status "${MQTT_STATUS[3]}"
     update-sensor "${SAMBA_STATUS[3]}"
     exit 1
 fi

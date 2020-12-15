@@ -11,11 +11,7 @@ declare EXCLUDE_ADDONS
 declare EXCLUDE_FOLDERS
 declare BACKUP_NAME
 declare BACKUP_PWD
-declare MQTT_HOST
-declare MQTT_USERNAME
-declare MQTT_PASSWORD
-declare MQTT_PORT
-declare MQTT_TOPIC
+
 
 # smbclient command strings
 declare SMB
@@ -45,11 +41,6 @@ function get-config {
 
     bashio::config.exists 'backup_name' && BACKUP_NAME=$(bashio::config 'backup_name') || BACKUP_NAME=""
     bashio::config.exists 'backup_password' && BACKUP_PWD=$(bashio::config 'backup_password') || BACKUP_PWD=""
-    bashio::config.exists 'mqtt_host' && MQTT_HOST=$(bashio::config 'mqtt_host') || MQTT_HOST=""
-    bashio::config.exists 'mqtt_username' && MQTT_USERNAME=$(bashio::config 'mqtt_username') || MQTT_USERNAME=""
-    bashio::config.exists 'mqtt_password' && MQTT_PASSWORD=$(bashio::config 'mqtt_password') || MQTT_PASSWORD=""
-    bashio::config.exists 'mqtt_port' && MQTT_PORT=$(bashio::config 'mqtt_port') || MQTT_PORT=""
-    bashio::config.exists 'mqtt_topic' && MQTT_TOPIC=$(bashio::config 'mqtt_topic') || MQTT_TOPIC="samba_backup"
 
     if [[ -n "$username" && -n "$password" ]]; then
         SMB="smbclient -U \"${username}\"%\"${password}\" \"//${HOST}/${share}\" 2>&1"
@@ -62,6 +53,7 @@ function get-config {
     # legacy SMB protocols allowed?
     bashio::config.true 'compatibility_mode' && SMB="${SMB} --option=\"client min protocol\"=\"NT1\""
     bashio::config.true 'compatibility_mode' && ALL_SHARES="${ALL_SHARES} --option=\"client min protocol\"=\"NT1\""
+
 
     # setup logging
     bashio::config.exists 'log_level' && bashio::log.level $(bashio::config 'log_level')

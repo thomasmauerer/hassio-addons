@@ -12,7 +12,6 @@
   "hassio_role": "manager",
   "stdin": true,
   "map": ["backup:rw"],
-  "services": ["mqtt:want"],
   "image": "thomasmauerer/samba-backup-{arch}",
   "options": {
     "host": null,
@@ -42,11 +41,6 @@
     "backup_name": "str?",
     "backup_password": "str?",
     "compatibility_mode": "bool?",
-    "log_level": "list(debug|info|warning|error)?",
-    "mqtt_host": "str?",
-    "mqtt_username": "str?",
-    "mqtt_password": "str?",
-    "mqtt_port": "str?",
-    "mqtt_topic": "str?"
+    "log_level": "list(debug|info|warning|error)?"
   }
 }

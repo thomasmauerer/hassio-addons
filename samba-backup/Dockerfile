@@ -14,7 +14,6 @@ RUN \
     && chmod a+x /usr/bin/ha \
     && apk add --no-cache \
         samba-client \
-        mosquitto-clients \
     && chmod a+x /run.sh
 
 # Run script
