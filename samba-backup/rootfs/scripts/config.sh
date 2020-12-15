@@ -26,11 +26,13 @@ function get-config {
     local share
     local username
     local password
+    local workgroup
 
     HOST=$(bashio::config 'host' | escape-input)
     share=$(bashio::config 'share' | escape-input)
     username=$(bashio::config 'username' | escape-input)
     password=$(bashio::config 'password' | escape-input)
+    bashio::config.exists 'workgroup' && workgroup=$(bashio::config 'workgroup' | escape-input) || workgroup=""
 
     TARGET_DIR=$(bashio::config 'target_dir')
     KEEP_LOCAL=$(bashio::config 'keep_local')
@@ -42,7 +44,6 @@ function get-config {
 
     bashio::config.exists 'backup_name' && BACKUP_NAME=$(bashio::config 'backup_name') || BACKUP_NAME=""
     bashio::config.exists 'backup_password' && BACKUP_PWD=$(bashio::config 'backup_password') || BACKUP_PWD=""
-
     bashio::config.true 'no_icmp' && NO_ICMP=true || NO_ICMP=false
 
     if [[ -n "$username" && -n "$password" ]]; then
@@ -53,10 +54,13 @@ function get-config {
         ALL_SHARES="smbclient -N -L \"//${HOST}\" 2>&1"
     fi
 
+    # non-default workgroup?
+    [ -n "$workgroup" ] && SMB="${SMB} -W \"${workgroup}\""
+    [ -n "$workgroup" ] && ALL_SHARES="${ALL_SHARES} -W \"${workgroup}\""
+
     # legacy SMB protocols allowed?
     bashio::config.true 'compatibility_mode' && SMB="${SMB} --option=\"client min protocol\"=\"NT1\""
     bashio::config.true 'compatibility_mode' && ALL_SHARES="${ALL_SHARES} --option=\"client min protocol\"=\"NT1\""
-
 
     # setup logging
     bashio::config.exists 'log_level' && bashio::log.level $(bashio::config 'log_level')
