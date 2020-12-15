@@ -10,7 +10,7 @@ function smb-precheck {
     local shares
 
     # check if the host is reachable
-    if ! run-and-log "ping -c 4 \"${HOST}\""; then
+    if [ "$NO_ICMP" = false ] && ! run-and-log "ping -c 4 \"${HOST}\""; then
         bashio::log.fatal "The provided host is unreachable. Please check your config."
         return 1
     fi

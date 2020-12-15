@@ -41,6 +41,7 @@
     "backup_name": "str?",
     "backup_password": "str?",
     "compatibility_mode": "bool?",
+    "no_icmp": "bool?",
     "log_level": "list(debug|info|warning|error)?"
   }
 }
