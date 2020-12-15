@@ -1,6 +1,6 @@
 {
   "name": "Samba Backup",
-  "version": "4.2",
+  "version": "4.3",
   "slug": "samba_backup",
   "description": "Create snapshots and store them on a Samba share",
   "url": "https://github.com/thomasmauerer/hassio-addons/tree/master/samba-backup",

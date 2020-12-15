@@ -68,37 +68,22 @@ _Example_: "{type} Snapshot {version} {date}" might end up as "Full Snapshot 0.1
 
 If specified the snapshots will be password-protected.
 
+### Option: `workgroup`
+
+The workgroup to use for authentication. Only set this option if not using the default workgroup `WORKGROUP`.
+
 ### Option: `compatibility_mode`
 
 Set this option to `true` if you need to connect to shares that only support old legacy SMB protocols. Note that this option is not recommended, since these protocols are known to be out-dated, insecure and slow.
+
+### Option: `no_icmp`
+
+Set this option to `true` if ICMP requests are blocked in your environment. With this flag the add-on will not make any ICMP requests at startup to check if the given host is reachable.
 
 ### Option: `log_level`
 
 Controls the verbosity of log output produced by this add-on. Possible values are `debug`, `info` (default), `warning` and `error`.
 
-### Option: `mqtt_host`
-
-If using an external mqtt broker, the hostname/URL of the broker. See [MQTT Status Notifications](https://github.com/thomasmauerer/hassio-addons/blob/master/samba-backup/DOCS.md#mqtt-status-notifications) for additional infos.
-
-**Note**: _Do not set this option if you want to use the (on-device) Mosquitto broker addon._
-
-### Option: `mqtt_username`
-
-If using an external mqtt broker, the username to authenticate with the broker.
-
-### Option: `mqtt_password`
-
-If using an external mqtt broker, the password to authenticate with the broker.
-
-### Option: `mqtt_port`
-
-If using an external mqtt broker, the port of the broker. If not specified the default port 1883 will be used.
-
-### Option: `mqtt_topic`
-
-The topic to which status updates will be published. You can only control the root topic with this option, the subtopic is fixed!
-
-_Example_: samba_backup/status: "samba_backup" is the root topic, whereas "status" is the subtopic.
 
 ## Home Assistant Sensor
 
@@ -140,28 +125,6 @@ automation:
 ```
 
 _Automation to restore the sensor when Home Assistant restarts_
-
-
-## MQTT Status Notifications
-
-**!!DEPRECATED!! Please switch to the new [Home Assistant Sensor](https://github.com/thomasmauerer/hassio-addons/blob/master/samba-backup/DOCS.md#home-assistant-sensor).**
-
-This add-on will (optionally) publish its current status via mqtt on topic `samba_backup/status`. The recommended way of setting this up is to install the official Mosquitto broker add-on. If you are using an Access Control List, make sure to add the following two lines. Otherwise you won't receive anything on the mqtt topic. No additional configuration is required!
-
-```
-user addons
-topic readwrite samba_backup/#
-```
-
-Auto-configuration will **not work** if you use an external mqtt broker instead of the Mosquitto add-on. In this case you have to specify the mqtt configuration options as documented above.
-
-
-The status will be one of the following:
-
-- `IDLE`: Samba Backup is waiting for the trigger
-- `RUNNING`: A backup is currently in progress
-- `SUCCEEDED`: The backup was successful
-- `FAILED`: The backup was not successful
 
 
 ## Manual Triggers

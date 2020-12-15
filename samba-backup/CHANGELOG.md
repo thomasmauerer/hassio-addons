@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.3
+
+- Remove mqtt support
+- Add config option for the workgroup
+- Add support to disable ICMP requests
+- Bump CLI version to 4.9.0
+
 ## 4.2
 
 - Fix supervisor warnings for partial snapshots
