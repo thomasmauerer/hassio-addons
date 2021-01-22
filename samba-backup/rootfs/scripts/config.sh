@@ -12,6 +12,7 @@ declare EXCLUDE_FOLDERS
 declare BACKUP_NAME
 declare BACKUP_PWD
 declare NO_ICMP
+declare SKIP_PRECHECK
 
 
 # smbclient command strings
@@ -45,6 +46,7 @@ function get-config {
     bashio::config.exists 'backup_name' && BACKUP_NAME=$(bashio::config 'backup_name') || BACKUP_NAME=""
     bashio::config.exists 'backup_password' && BACKUP_PWD=$(bashio::config 'backup_password') || BACKUP_PWD=""
     bashio::config.true 'no_icmp' && NO_ICMP=true || NO_ICMP=false
+    bashio::config.true 'skip_precheck' && SKIP_PRECHECK=true || SKIP_PRECHECK=false
 
     if [[ -n "$username" && -n "$password" ]]; then
         SMB="smbclient -U \"${username}\"%\"${password}\" \"//${HOST}/${share}\" 2>&1"
