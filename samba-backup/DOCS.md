@@ -62,8 +62,6 @@ The custom name for the snapshots. You can either use a fixed text or include th
 
 _Example_: "{type} Snapshot {version} {date}" might end up as "Full Snapshot 0.110.4 2020-06-05 12:00"
 
-**Note**: _This only affects the snapshot names, not the file names itself._
-
 ### Option: `backup_password`
 
 If specified the snapshots will be password-protected.
@@ -75,10 +73,6 @@ The workgroup to use for authentication. Only set this option if not using the d
 ### Option: `compatibility_mode`
 
 Set this option to `true` if you need to connect to shares that only support old legacy SMB protocols. Note that this option is not recommended, since these protocols are known to be out-dated, insecure and slow.
-
-### Option: `no_icmp`
-
-Set this option to `true` if ICMP requests are blocked in your environment. With this flag the add-on will not make any ICMP requests at startup to check if the given host is reachable.
 
 ### Option: `skip_precheck`
 

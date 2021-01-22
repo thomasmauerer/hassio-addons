@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.4
+
+- Use snapshot names for the filenames on the share
+- Remove ICMP requests and config option `no_icmp`
+- Add support to skip the pre-checks on add-on startup
+
 ## 4.3
 
 - Remove mqtt support
