@@ -43,6 +43,7 @@
     "workgroup": "str?",
     "compatibility_mode": "bool?",
     "no_icmp": "bool?",
+    "skip_precheck": "bool?",
     "log_level": "list(debug|info|warning|error)?"
   }
 }

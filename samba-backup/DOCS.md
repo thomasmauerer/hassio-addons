@@ -80,6 +80,10 @@ Set this option to `true` if you need to connect to shares that only support old
 
 Set this option to `true` if ICMP requests are blocked in your environment. With this flag the add-on will not make any ICMP requests at startup to check if the given host is reachable.
 
+### Option: `skip_precheck`
+
+Set this option to `true` if you want to skip the checks about the availability/existance/permissions of the share. These checks are performed when the add-on starts. Only use this if you know what you are doing! Default value is `false`.
+
 ### Option: `log_level`
 
 Controls the verbosity of log output produced by this add-on. Possible values are `debug`, `info` (default), `warning` and `error`.
