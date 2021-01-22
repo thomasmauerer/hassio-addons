@@ -1,7 +1,6 @@
 #!/usr/bin/env bashio
 
 # user input variables
-declare HOST
 declare TARGET_DIR
 declare KEEP_LOCAL
 declare KEEP_REMOTE
@@ -11,7 +10,6 @@ declare EXCLUDE_ADDONS
 declare EXCLUDE_FOLDERS
 declare BACKUP_NAME
 declare BACKUP_PWD
-declare NO_ICMP
 declare SKIP_PRECHECK
 
 
@@ -24,12 +22,13 @@ declare ALL_SHARES
 # Read and print config.
 # ------------------------------------------------------------------------------
 function get-config {
+    local host
     local share
     local username
     local password
     local workgroup
 
-    HOST=$(bashio::config 'host' | escape-input)
+    host=$(bashio::config 'host' | escape-input)
     share=$(bashio::config 'share' | escape-input)
     username=$(bashio::config 'username' | escape-input)
     password=$(bashio::config 'password' | escape-input)
@@ -45,15 +44,14 @@ function get-config {
 
     bashio::config.exists 'backup_name' && BACKUP_NAME=$(bashio::config 'backup_name') || BACKUP_NAME=""
     bashio::config.exists 'backup_password' && BACKUP_PWD=$(bashio::config 'backup_password') || BACKUP_PWD=""
-    bashio::config.true 'no_icmp' && NO_ICMP=true || NO_ICMP=false
     bashio::config.true 'skip_precheck' && SKIP_PRECHECK=true || SKIP_PRECHECK=false
 
     if [[ -n "$username" && -n "$password" ]]; then
-        SMB="smbclient -U \"${username}\"%\"${password}\" \"//${HOST}/${share}\" 2>&1"
-        ALL_SHARES="smbclient -U \"${username}\"%\"${password}\" -L \"//${HOST}\" 2>&1"
+        SMB="smbclient -U \"${username}\"%\"${password}\" \"//${host}/${share}\" 2>&1"
+        ALL_SHARES="smbclient -U \"${username}\"%\"${password}\" -L \"//${host}\" 2>&1"
     else
-        SMB="smbclient -N \"//${HOST}/${share}\" 2>&1"
-        ALL_SHARES="smbclient -N -L \"//${HOST}\" 2>&1"
+        SMB="smbclient -N \"//${host}/${share}\" 2>&1"
+        ALL_SHARES="smbclient -N -L \"//${host}\" 2>&1"
     fi
 
     # non-default workgroup?
@@ -67,7 +65,7 @@ function get-config {
     # setup logging
     bashio::config.exists 'log_level' && bashio::log.level $(bashio::config 'log_level')
 
-    bashio::log.info "Host: ${HOST}"
+    bashio::log.info "Host: ${host}"
     bashio::log.info "Share: ${share}"
     bashio::log.info "Target Dir: ${TARGET_DIR}"
     bashio::log.info "Keep local: ${KEEP_LOCAL}"

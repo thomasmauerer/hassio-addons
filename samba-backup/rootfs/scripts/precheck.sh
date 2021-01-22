@@ -9,18 +9,16 @@ function smb-precheck {
     local result
     local shares
 
-    # check if the host is reachable
-    if [ "$NO_ICMP" = false ] && ! run-and-log "ping -c 4 \"${HOST}\""; then
-        bashio::log.fatal "The provided host is unreachable. Please check your config."
-        return 1
-    fi
-
     # check if we can access the share at all
     if ! result=$(eval "${SMB} -c 'exit'"); then
         bashio::log.warning "$result"
 
+        # host unreachable
+        if [[ "$result" =~ "NT_STATUS_HOST_UNREACHABLE" ]]; then
+            bashio::log.fatal "The provided host is unreachable. Please check your config and network."
+
         # SMB1 problem
-        if [[ "$result" =~ "NT_STATUS_CONNECTION_DISCONNECTED" ]]; then
+        elif [[ "$result" =~ "NT_STATUS_CONNECTION_DISCONNECTED" ]]; then
             bashio::log.fatal "Cannot access share. It seems that your share only supports insecure SMB protocols."
             bashio::log.fatal "If you want me to connect, please check the \"compatibility_mode\" option. Use at your own risk."
 
@@ -47,7 +45,6 @@ function smb-precheck {
             bashio::log.fatal "Cannot access share. Unknown reason."
         fi
 
-
         return 1
     fi
 
@@ -64,7 +61,6 @@ function smb-precheck {
         return 1
     fi
     rm samba-tmp123
-
 
     return 0
 }

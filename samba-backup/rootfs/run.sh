@@ -36,11 +36,9 @@ get-sensor
 update-sensor "${SAMBA_STATUS[0]}"
 
 # run precheck and exit entire addon
-if [ "$SKIP_PRECHECK" = false ]; then
-    if ! smb-precheck; then
-        update-sensor "${SAMBA_STATUS[3]}"
-        exit 1
-    fi
+if [ "$SKIP_PRECHECK" = false ] && ! smb-precheck; then
+    update-sensor "${SAMBA_STATUS[3]}"
+    exit 1
 fi
 
 
