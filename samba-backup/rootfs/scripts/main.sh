@@ -1,21 +1,21 @@
 #!/usr/bin/env bashio
 
 declare SLUG
+declare SNAP_NAME
 
 
 # ------------------------------------------------------------------------------
 # Create a new snapshot (full or partial).
 # ------------------------------------------------------------------------------
 function create-snapshot {
-    local name
     local args
     local addons
     local folders
 
-    name=$(generate-snapshot-name)
+    SNAP_NAME=$(generate-snapshot-name)
 
     args=()
-    args+=("--name" "$name")
+    args+=("--name" "$SNAP_NAME")
     [ -n "$BACKUP_PWD" ] && args+=("--password" "$BACKUP_PWD")
 
     # do we need a partial backup?
@@ -30,22 +30,30 @@ function create-snapshot {
     fi
 
     # run the command
-    bashio::log.info "Creating snapshot \"${name}\""
-    SLUG="$(ha snapshots new "${args[@]}" --raw-json | jq -r .data.slug).tar"
+    bashio::log.info "Creating snapshot \"${SNAP_NAME}\""
+    SLUG="$(ha snapshots new "${args[@]}" --raw-json | jq -r .data.slug)"
 }
 
 # ------------------------------------------------------------------------------
 # Copy the latest snapshot to the remote share.
 # ------------------------------------------------------------------------------
 function copy-snapshot {
+    local store_name=$(generate-filename "$SNAP_NAME")
+    local input
+    local count
+
+    # append number to filename if already existing
+    input="$(eval "${SMB} -c 'cd \"${TARGET_DIR}\"; ls'")"
+    count=$(echo "$input" | grep "\<$store_name.*\.tar\>" | wc -l)
+    (( "$count" > 0 )) && store_name="${store_name}${count}.tar" || store_name="${store_name}.tar"
+
+    bashio::log.info "Copying snapshot ${SLUG} (${store_name}) to share"
     cd /backup
 
-    bashio::log.info "Copying snapshot ${SLUG} to share"
-
-    if ! run-and-log "${SMB} -c 'cd \"${TARGET_DIR}\"; put ${SLUG}'"; then
+    if ! run-and-log "${SMB} -c 'cd \"${TARGET_DIR}\"; put ${SLUG}.tar ${store_name}'"; then
         bashio::log.warning "Could not copy snapshot ${SLUG} to share. Trying again ..."
         sleep 5
-        run-and-log "${SMB} -c 'cd \"${TARGET_DIR}\"; put ${SLUG}'"
+        run-and-log "${SMB} -c 'cd \"${TARGET_DIR}\"; put ${SLUG}.tar ${store_name}'"
     fi
 }
 
@@ -79,14 +87,14 @@ function cleanup-snapshots-remote {
 
     # read all tar files that match the snapshot name pattern and sort them
     input="$(eval "${SMB} -c 'cd \"${TARGET_DIR}\"; ls'")"
-    snaps="$(echo "$input" | grep -E '\<[0-9a-f]{8}\.tar\>' | while read slug _ _ _ a b c d; do
+    snaps="$(echo "$input" | grep -E '\<([0-9a-f]{8}|Samba_Backup_.*)\.tar\>' | while read name _ _ _ a b c d; do
         theDate=$(echo "$a $b $c $d" | xargs -i date +'%Y-%m-%d %H:%M' -d "{}")
-        echo "$theDate $slug"
+        echo "$theDate $name"
     done | sort -r)"
     bashio::log.debug "$snaps"
 
-    echo "$snaps" | tail -n +$(($KEEP_REMOTE + 1)) | while read _ _ slug; do
-        bashio::log.info "Deleting ${slug} on share"
-        run-and-log "${SMB} -c 'cd \"${TARGET_DIR}\"; rm ${slug}'"
+    echo "$snaps" | tail -n +$(($KEEP_REMOTE + 1)) | while read _ _ name; do
+        bashio::log.info "Deleting ${name} on share"
+        run-and-log "${SMB} -c 'cd \"${TARGET_DIR}\"; rm ${name}'"
     done
 }

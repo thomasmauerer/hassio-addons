@@ -75,7 +75,7 @@ function update-sensor {
         fi
 
         if response=$(eval "${SMB} -c 'cd \"${TARGET_DIR}\"; ls'"); then
-            BACKUPS_REMOTE=$(echo "$response" | grep -E '\<[0-9a-f]{8}\.tar\>' | wc -l)
+            BACKUPS_REMOTE=$(echo "$response" | grep -E '\<([0-9a-f]{8}|Samba_Backup_.*)\.tar\>' | wc -l)
         fi
 
         if [ "$CURRENT_STATUS" = ${SAMBA_STATUS[2]} ]; then

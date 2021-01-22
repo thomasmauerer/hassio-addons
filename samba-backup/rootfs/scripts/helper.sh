@@ -28,6 +28,27 @@ function generate-snapshot-name {
 }
 
 # ------------------------------------------------------------------------------
+# Create a valid filename by replacing all forbidden characters.
+#
+# Arguments
+#  $1 The original name
+#
+# Returns the final name on stdout
+# ------------------------------------------------------------------------------
+function generate-filename {
+    local input="${1}"
+    local prefix
+
+    declare -a forbidden=('\/' '\\' '\<' '\>' '\:' '\"' '\|' '\?' '\*' '\.' '\..' '\ ' '\-')
+    for fc in "${forbidden[@]}"; do
+        input=${input//$fc/_}
+    done
+
+    prefix=${input:0:13}
+    [ "$prefix" = "Samba_Backup_" ] && echo "${input}" || echo "Samba_Backup_${input}"
+}
+
+# ------------------------------------------------------------------------------
 # Run a command and log its output (debug or warning).
 #
 # Arguments
