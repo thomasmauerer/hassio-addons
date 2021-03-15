@@ -47,10 +47,10 @@ function get-config {
     bashio::config.true 'skip_precheck' && SKIP_PRECHECK=true || SKIP_PRECHECK=false
 
     if [[ -n "$username" && -n "$password" ]]; then
-        SMB="smbclient -U \"${username}\"%\"${password}\" \"//${host}/${share}\" 2>&1"
+        SMB="smbclient -U \"${username}\"%\"${password}\" \"//${host}/${share}\" 2>&1 -t 180"
         ALL_SHARES="smbclient -U \"${username}\"%\"${password}\" -L \"//${host}\" 2>&1"
     else
-        SMB="smbclient -N \"//${host}/${share}\" 2>&1"
+        SMB="smbclient -N \"//${host}/${share}\" 2>&1 -t 180"
         ALL_SHARES="smbclient -N -L \"//${host}\" 2>&1"
     fi
 
