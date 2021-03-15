@@ -1,6 +1,6 @@
 {
   "name": "Samba Backup",
-  "version": "4.4",
+  "version": "4.5.0",
   "slug": "samba_backup",
   "description": "Create snapshots and store them on a Samba share",
   "url": "https://github.com/thomasmauerer/hassio-addons/tree/master/samba-backup",
@@ -31,7 +31,7 @@
     "share": "str",
     "target_dir": "str",
     "username": "str",
-    "password": "str",
+    "password": "password",
     "keep_local": "match(^(all|[0-9]+)$)",
     "keep_remote": "match(^(all|[0-9]+)$)",
     "trigger_time": "match(^(manual|([0-1][0-9]|2[0-3]):[0-5][0-9])$)",
