@@ -31,7 +31,7 @@ function create-snapshot {
 
     # run the command
     bashio::log.info "Creating snapshot \"${SNAP_NAME}\""
-    SLUG="$(ha snapshots new "${args[@]}" --raw-json | jq -r .data.slug)"
+    SLUG="$(ha backups new "${args[@]}" --raw-json | jq -r .data.slug)"
 }
 
 # ------------------------------------------------------------------------------
@@ -66,13 +66,13 @@ function cleanup-snapshots-local {
 
     [ "$KEEP_LOCAL" == "all" ] && return 0
 
-    snaps=$(ha snapshots --raw-json | jq -c '.data.snapshots[] | {date,slug,name}' | sort -r)
+    snaps=$(ha backups --raw-json | jq -c '.data.snapshots[] | {date,slug,name}' | sort -r)
     bashio::log.debug "$snaps"
 
     echo "$snaps" | tail -n +$(($KEEP_LOCAL + 1)) | while read backup; do
         slug=$(echo $backup | jq -r .slug)
         bashio::log.info "Deleting ${slug} local"
-        run-and-log "ha snapshots remove ${slug}"
+        run-and-log "ha backups remove ${slug}"
     done
 }
 
