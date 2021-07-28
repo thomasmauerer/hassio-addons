@@ -70,7 +70,7 @@ function update-sensor {
     CURRENT_STATUS="$status"
 
     if bashio::var.has_value "${all}"; then
-        if response=$(ha snapshots --raw-json | jq ".data.snapshots[].slug"); then
+        if response=$(ha backups --raw-json | jq ".data.snapshots[].slug"); then
             BACKUPS_LOCAL=$(echo "$response" | wc -l)
         fi
 
