@@ -1,45 +1,46 @@
-FROM ubuntu:20.04
+FROM mcr.microsoft.com/vscode/devcontainers/base:debian
 
 WORKDIR /workspaces
 
-# Default ENV
-ENV LANG C.UTF-8
-ENV DEBIAN_FRONTEND noninteractive
-
-# Set shell
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# Use the mirror protocol for a fast mirror
-RUN sed -i -e 's/http:\/\/archive\.ubuntu\.com\/ubuntu\//mirror:\/\/mirrors\.ubuntu\.com\/mirrors\.txt/' /etc/apt/sources.list
+# Set Docker daemon config
+RUN \
+    mkdir -p /etc/docker \
+    && echo '{"storage-driver": "vfs"}' > /etc/docker/daemon.json
 
-# Install docker, jq, socat
-# https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/
+# Installa aditional tools
+RUN \
+    apt-get update \
+    && apt-get install -y --no-install-recommends \
+        dbus \
+        network-manager \
+        libpulse0 \
+        xz-utils
+
+# Install docker
 RUN apt-get update && apt-get install -y --no-install-recommends \
         apt-transport-https \
         ca-certificates \
         curl \
-        dbus \
         software-properties-common \
         gpg-agent \
-        git \
-        jq \
-        socat \
-        sudo \
-    && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - \
-    && add-apt-repository "deb https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
+    && curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - \
+    && add-apt-repository "deb https://download.docker.com/linux/debian $(lsb_release -cs) stable" \
     && apt-get update && apt-get install -y --no-install-recommends \
         docker-ce \
         docker-ce-cli \
-        containerd.io
-# This is a development container.  Don't bother to clean up apt cache, this way we have it handy later
+        containerd.io \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY .devcontainer/start_ha.sh /usr/local/bin/start_ha.sh
-
-# Install dependencies for the add-on development below.  For example, if you're running Node.js,
-# you may want something like the following...
-# RUN apt-get install -y --no-install-recommends nodejs npm
+# Install shellcheck
+RUN \
+    curl -fLs \
+        "https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz" \
+        | tar -xJ \
+    \
+    && mv -f "./shellcheck-stable/shellcheck" "/usr/bin/shellcheck" \
+    && rm -rf "./shellcheck-stable"
 
 # Generate a machine-id for this container
 RUN rm /etc/machine-id && dbus-uuidgen --ensure=/etc/machine-id
-
-ENV DEBIAN_FRONTEND=dialog
