@@ -17,7 +17,7 @@ function run-backup {
         update-sensor "${SAMBA_STATUS[1]}"
 
         # run entire backup steps
-        create-snapshot && copy-snapshot && cleanup-snapshots-local && cleanup-snapshots-remote \
+        create-backup && copy-backup && cleanup-backups-local && cleanup-backups-remote \
             && update-sensor "${SAMBA_STATUS[2]}" "ALL" \
             || update-sensor "${SAMBA_STATUS[3]}" "ALL"
 

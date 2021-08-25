@@ -1,11 +1,11 @@
 #!/usr/bin/env bashio
 
 # ------------------------------------------------------------------------------
-# Create the snapshot name by replacing all name patterns.
+# Create the backup name by replacing all name patterns.
 #
 # Returns the final name on stdout
 # ------------------------------------------------------------------------------
-function generate-snapshot-name {
+function generate-backup-name {
     local name="Samba Backup $(date +'%Y-%m-%d %H:%M')"
     local theversion
     local thetype

@@ -4,11 +4,11 @@
 
 ![Current version][version]
 
-Create snapshots and store them on a Samba share.
+Create backups and store them on a Samba share.
 
 ## About
 
-This add-on lets you automatically create Home Assistant snapshots and store them on a Samba share. This does work with Samba shares that require authentication by username/password or allow guest access.
+This add-on lets you automatically create Home Assistant backups and store them on a Samba share. This does work with Samba shares that require authentication by username/password or allow guest access.
 
 ## Installation
 
@@ -35,7 +35,7 @@ _Example configuration_:
   "trigger_days": ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
   "exclude_addons": ["core_ssh", "core_duckdns"],
   "exclude_folders": ["ssl"],
-  "backup_name": "{type} Snapshot {date}"
+  "backup_name": "{type} Backup {date}"
 }
 ```
 

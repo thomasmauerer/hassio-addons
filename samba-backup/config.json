@@ -2,7 +2,7 @@
   "name": "Samba Backup",
   "version": "4.5.0",
   "slug": "samba_backup",
-  "description": "Create snapshots and store them on a Samba share",
+  "description": "Create backups and store them on a Samba share",
   "url": "https://github.com/thomasmauerer/hassio-addons/tree/master/samba-backup",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
   "startup": "application",

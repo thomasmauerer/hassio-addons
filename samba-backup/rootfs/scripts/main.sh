@@ -5,14 +5,14 @@ declare SNAP_NAME
 
 
 # ------------------------------------------------------------------------------
-# Create a new snapshot (full or partial).
+# Create a new backup (full or partial).
 # ------------------------------------------------------------------------------
-function create-snapshot {
+function create-backup {
     local args
     local addons
     local folders
 
-    SNAP_NAME=$(generate-snapshot-name)
+    SNAP_NAME=$(generate-backup-name)
 
     args=()
     args+=("--name" "$SNAP_NAME")
@@ -30,14 +30,14 @@ function create-snapshot {
     fi
 
     # run the command
-    bashio::log.info "Creating snapshot \"${SNAP_NAME}\""
+    bashio::log.info "Creating backup \"${SNAP_NAME}\""
     SLUG="$(ha backups new "${args[@]}" --raw-json | jq -r .data.slug)"
 }
 
 # ------------------------------------------------------------------------------
-# Copy the latest snapshot to the remote share.
+# Copy the latest backup to the remote share.
 # ------------------------------------------------------------------------------
-function copy-snapshot {
+function copy-backup {
     local store_name=$(generate-filename "$SNAP_NAME")
     local input
     local count
@@ -47,20 +47,20 @@ function copy-snapshot {
     count=$(echo "$input" | grep "\<$store_name.*\.tar\>" | wc -l)
     (( "$count" > 0 )) && store_name="${store_name}${count}.tar" || store_name="${store_name}.tar"
 
-    bashio::log.info "Copying snapshot ${SLUG} (${store_name}) to share"
+    bashio::log.info "Copying backup ${SLUG} (${store_name}) to share"
     cd /backup
 
     if ! run-and-log "${SMB} -c 'cd \"${TARGET_DIR}\"; put ${SLUG}.tar ${store_name}'"; then
-        bashio::log.warning "Could not copy snapshot ${SLUG} to share. Trying again ..."
+        bashio::log.warning "Could not copy backup ${SLUG} to share. Trying again ..."
         sleep 5
         run-and-log "${SMB} -c 'cd \"${TARGET_DIR}\"; put ${SLUG}.tar ${store_name}'"
     fi
 }
 
 # ------------------------------------------------------------------------------
-# Delete old local snapshots.
+# Delete old local backups.
 # ------------------------------------------------------------------------------
-function cleanup-snapshots-local {
+function cleanup-backups-local {
     local snaps
     local slug
 
@@ -77,15 +77,15 @@ function cleanup-snapshots-local {
 }
 
 # ------------------------------------------------------------------------------
-# Delete old snapshots on the share.
+# Delete old backups on the share.
 # ------------------------------------------------------------------------------
-function cleanup-snapshots-remote {
+function cleanup-backups-remote {
     local input
     local snaps
 
     [ "$KEEP_REMOTE" == "all" ] && return 0
 
-    # read all tar files that match the snapshot name pattern and sort them
+    # read all tar files that match the backup name pattern and sort them
     input="$(eval "${SMB} -c 'cd \"${TARGET_DIR}\"; ls'")"
     snaps="$(echo "$input" | grep -E '\<([0-9a-f]{8}|Samba_Backup_.*)\.tar\>' | while read name _ _ _ a b c d; do
         theDate=$(echo "$a $b $c $d" | xargs -i date +'%Y-%m-%d %H:%M' -d "{}")

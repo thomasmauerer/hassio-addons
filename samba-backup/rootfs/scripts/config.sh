@@ -92,7 +92,7 @@ function escape-input {
 }
 
 # ------------------------------------------------------------------------------
-# Overwrite the snapshot parameters.
+# Overwrite the backup parameters.
 #
 # Arguments
 #  $1 The json input string
@@ -120,7 +120,7 @@ function overwrite-params {
 }
 
 # ------------------------------------------------------------------------------
-# Restore the original snapshot parameters.
+# Restore the original backup parameters.
 # ------------------------------------------------------------------------------
 function restore-params {
     EXCLUDE_ADDONS=$(bashio::config 'exclude_addons')

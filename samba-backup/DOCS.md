@@ -1,6 +1,6 @@
 # Home Assistant Add-on: Samba Backup
 
-Create snapshots and store them on a Samba share.
+Create backups and store them on a Samba share.
 
 ## Configuration Options
 
@@ -14,7 +14,7 @@ The name of the Samba share.
 
 ### Option: `target_dir`
 
-The target directory on the Samba share in which the snapshots will be stored. If not specified the snapshots will be stored in the root directory.
+The target directory on the Samba share in which the backups will be stored. If not specified the backups will be stored in the root directory.
 
 **Note**: _The directory must exist and write permissions must be granted._
 
@@ -28,13 +28,13 @@ The password to access the Samba share.
 
 ### Option: `keep_local`
 
-The number of local snapshots to be preserved. Set `all` if you do not want to delete any snapshots.
+The number of local backups to be preserved. Set `all` if you do not want to delete any backups.
 
-**Note**: _Snapshots that were not created with this add-on will be deleted as well._
+**Note**: _Backups that were not created with this add-on will be deleted as well._
 
 ### Option: `keep_remote`
 
-The number of snapshots to be preserved on the Samba share. Set `all` if you do not want to delete any snapshots.
+The number of backups to be preserved on the Samba share. Set `all` if you do not want to delete any backups.
 
 ### Option: `trigger_time`
 
@@ -46,25 +46,25 @@ The days on which a backup will be triggered. If `trigger_time` is set to `manua
 
 ### Option: `exclude_addons`
 
-The slugs of add-ons to exclude in the snapshot. This will trigger a partial snapshot if specified. You can find out the correct slugs by clicking on an installed add-on and looking at the URL e.g. `core_ssh`.
+The slugs of add-ons to exclude in the backup. This will trigger a partial backup if specified. You can find out the correct slugs by clicking on an installed add-on and looking at the URL e.g. `core_ssh`.
 
 ### Option: `exclude_folders`
 
-The folders to exclude in the snapshot. This will trigger a partial snapshot if specified. Possible values are `homeassistant`, `ssl`, `share`, `addons/local` and `media`.
+The folders to exclude in the backup. This will trigger a partial backup if specified. Possible values are `homeassistant`, `ssl`, `share`, `addons/local` and `media`.
 
 ### Option: `backup_name`
 
-The custom name for the snapshots. You can either use a fixed text or include the following name patterns which will automatically be converted to its real values.
+The custom name for the backups. You can either use a fixed text or include the following name patterns which will automatically be converted to its real values.
 
 - `{type}`: Full or Partial
 - `{version}`: The current version of Home Assistant
 - `{date}`: The current date and timestamp
 
-_Example_: "{type} Snapshot {version} {date}" might end up as "Full Snapshot 0.110.4 2020-06-05 12:00"
+_Example_: "{type} Backup {version} {date}" might end up as "Full Backup 0.110.4 2020-06-05 12:00"
 
 ### Option: `backup_password`
 
-If specified the snapshots will be password-protected.
+If specified the backups will be password-protected.
 
 ### Option: `workgroup`
 
@@ -98,8 +98,8 @@ The state of the sensor will be one of the following:
 
 The sensor includes the following attributes:
 
-- `backups local`: The current number of snapshots available on the device
-- `backups remote`: The current number of snapshots available on the Samba share
+- `backups local`: The current number of backups available on the device
+- `backups remote`: The current number of backups available on the Samba share
 - `total backups succeeded`: The total number of successful backups made with this add-on
 - `total backups failed`: The total number of failed backups
 - `last backup`: The date of the last successful backup
@@ -140,7 +140,7 @@ data:
 
 _Simple trigger_
 
-The configuration options that directly affect the snapshot creation are overwritable for a single run: `exclude_addons`, `exclude_folders`, `backup_name` and `backup_password`. To overwrite any of these options, you have to use an extended syntax - `command` has to be `trigger`. See the following example:
+The configuration options that directly affect the backup creation are overwritable for a single run: `exclude_addons`, `exclude_folders`, `backup_name` and `backup_password`. To overwrite any of these options, you have to use an extended syntax - `command` has to be `trigger`. See the following example:
 
 ```yaml
 service: hassio.addon_stdin
@@ -148,7 +148,7 @@ data:
   addon: 15d21743_samba_backup
   input:
     command: trigger
-    backup_name: My overwritten snapshot name {date}
+    backup_name: My overwritten backup name {date}
     backup_password: some_pwd
     exclude_addons: [core_mariadb, core_deconz]
     exclude_folders: [ssl]
