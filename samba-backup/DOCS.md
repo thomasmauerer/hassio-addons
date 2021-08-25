@@ -125,6 +125,19 @@ automation:
 _Automation to restore the sensor when Home Assistant restarts_
 
 
+The `total backups failed` and `total backups succeeded` counters can be reset with the following script:
+
+```yaml
+service: hassio.addon_stdin
+data:
+  addon: 15d21743_samba_backup
+  input: reset-counter
+```
+
+_Reset counter variables_
+
+
+
 ## Manual Triggers
 
 Apart from a time-based schedule, this add-on also supports manual triggers from a Home Assistant automation or script. If you only want manual triggers, you can set `trigger_time` to `manual`.

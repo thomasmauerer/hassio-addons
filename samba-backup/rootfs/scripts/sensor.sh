@@ -131,6 +131,16 @@ function restore-sensor {
     return 0
 }
 
+# ------------------------------------------------------------------------------
+# Reset the counter variables of the Home Assistant sensor.
+# ------------------------------------------------------------------------------
+function reset-counter {
+    TOTAL_SUCCESS="0"
+    TOTAL_FAIL="0"
+
+    update-sensor "$CURRENT_STATUS"
+}
+
 
 # ------------------------------------------------------------------------------
 # ----------------------- INTERNAL FUNCTION ------------------------------------

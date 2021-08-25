@@ -65,6 +65,10 @@ while true; do
     if [ "$input" = "restore-sensor" ]; then
         restore-sensor
 
+    elif [ "$input" = "reset-counter" ]; then
+        reset-counter
+        bashio::log.info "Counter variables reset successfully"
+
     elif [ "$input" = "trigger" ]; then
         run-backup
 
