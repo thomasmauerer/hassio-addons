@@ -38,9 +38,16 @@ function create-backup {
 # Copy the latest backup to the remote share.
 # ------------------------------------------------------------------------------
 function copy-backup {
-    local store_name=$(generate-filename "$SNAP_NAME")
+    local store_name
     local input
     local count
+
+    if [ "$SLUG" = "null" ]; then
+        bashio::log.error "Error occurred! Backup could not be created! Please try again"
+        return 1
+    fi
+
+    store_name=$(generate-filename "$SNAP_NAME")
 
     # append number to filename if already existing
     input="$(eval "${SMB} -c 'cd \"${TARGET_DIR}\"; ls'")"
@@ -48,7 +55,7 @@ function copy-backup {
     (( "$count" > 0 )) && store_name="${store_name}${count}.tar" || store_name="${store_name}.tar"
 
     bashio::log.info "Copying backup ${SLUG} (${store_name}) to share"
-    cd /backup
+    cd /backup || return 1
 
     if ! run-and-log "${SMB} -c 'cd \"${TARGET_DIR}\"; put ${SLUG}.tar ${store_name}'"; then
         bashio::log.warning "Could not copy backup ${SLUG} to share. Trying again ..."
