@@ -6,7 +6,7 @@
 # Returns the final name on stdout
 # ------------------------------------------------------------------------------
 function generate-backup-name {
-    local name="Samba Backup $(date +'%Y-%m-%d %H:%M')"
+    local name
     local theversion
     local thetype
     local thedate
@@ -22,6 +22,8 @@ function generate-backup-name {
         name=${name/\{version\}/$theversion}
         name=${name/\{type\}/$thetype}
         name=${name/\{date\}/$thedate}
+    else
+        name="Samba Backup $(date +'%Y-%m-%d %H:%M')"
     fi
 
     echo "$name"

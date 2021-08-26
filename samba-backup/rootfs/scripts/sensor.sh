@@ -78,11 +78,11 @@ function update-sensor {
             BACKUPS_REMOTE=$(echo "$response" | grep -E '\<([0-9a-f]{8}|Samba_Backup_.*)\.tar\>' | wc -l)
         fi
 
-        if [ "$CURRENT_STATUS" = ${SAMBA_STATUS[2]} ]; then
-            TOTAL_SUCCESS=$(($TOTAL_SUCCESS + 1))
+        if [ "$CURRENT_STATUS" = "${SAMBA_STATUS[2]}" ]; then
+            TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
             LAST_BACKUP=$(date +'%Y-%m-%d %H:%M')
-        elif [ "$CURRENT_STATUS" = ${SAMBA_STATUS[3]} ]; then
-            TOTAL_FAIL=$(($TOTAL_FAIL + 1))
+        elif [ "$CURRENT_STATUS" = "${SAMBA_STATUS[3]}" ]; then
+            TOTAL_FAIL=$((TOTAL_FAIL + 1))
         fi
     fi
 

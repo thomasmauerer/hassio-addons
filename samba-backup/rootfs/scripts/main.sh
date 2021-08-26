@@ -22,11 +22,11 @@ function create-backup {
     if [[ -n "$EXCLUDE_ADDONS" || -n "$EXCLUDE_FOLDERS" ]]; then
         # include all installed addons that are not listed to be excluded
         addons=$(ha addons --raw-json | jq -rc '.data.addons[] | select (.installed == true) | .slug')
-        for ad in ${addons}; do [[ ! $EXCLUDE_ADDONS =~ "$ad" ]] && args+=("-a" "$ad"); done
+        for ad in ${addons}; do [[ ! $EXCLUDE_ADDONS =~ $ad ]] && args+=("-a" "$ad"); done
 
         # include all folders that are not listed to be excluded
         folders=(homeassistant ssl share addons/local media)
-        for fol in ${folders[@]}; do [[ ! $EXCLUDE_FOLDERS =~ "$fol" ]] && args+=("-f" "$fol"); done
+        for fol in "${folders[@]}"; do [[ ! $EXCLUDE_FOLDERS =~ $fol ]] && args+=("-f" "$fol"); done
     fi
 
     # run the command
@@ -77,7 +77,7 @@ function cleanup-backups-local {
     snaps=$(ha backups --raw-json | jq -c '.data.backups[] | {date,slug,name}' | sort -r)
     bashio::log.debug "$snaps"
 
-    echo "$snaps" | tail -n +$(($KEEP_LOCAL + 1)) | while read backup; do
+    echo "$snaps" | tail -n +$((KEEP_LOCAL + 1)) | while read -r backup; do
         slug=$(echo "$backup" | jq -r .slug)
         name=$(echo "$backup" | jq -r .name)
         bashio::log.info "Deleting ${slug} (${name}) local"
@@ -96,13 +96,13 @@ function cleanup-backups-remote {
 
     # read all tar files that match the backup name pattern and sort them
     input="$(eval "${SMB} -c 'cd \"${TARGET_DIR}\"; ls'")"
-    snaps="$(echo "$input" | grep -E '\<([0-9a-f]{8}|Samba_Backup_.*)\.tar\>' | while read name _ _ _ a b c d; do
+    snaps="$(echo "$input" | grep -E '\<([0-9a-f]{8}|Samba_Backup_.*)\.tar\>' | while read -r name _ _ _ a b c d; do
         theDate=$(echo "$a $b $c $d" | xargs -i date +'%Y-%m-%d %H:%M' -d "{}")
         echo "$theDate $name"
     done | sort -r)"
     bashio::log.debug "$snaps"
 
-    echo "$snaps" | tail -n +$(($KEEP_REMOTE + 1)) | while read _ _ name; do
+    echo "$snaps" | tail -n +$((KEEP_REMOTE + 1)) | while read -r _ _ name; do
         bashio::log.info "Deleting ${name} on share"
         run-and-log "${SMB} -c 'cd \"${TARGET_DIR}\"; rm ${name}'"
     done

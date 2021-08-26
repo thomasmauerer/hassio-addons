@@ -1,4 +1,5 @@
 #!/usr/bin/env bashio
+# shellcheck disable=SC2034
 
 # user input variables
 declare TARGET_DIR

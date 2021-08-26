@@ -1,4 +1,5 @@
 #!/usr/bin/env bashio
+# shellcheck disable=SC1091
 
 source scripts/config.sh
 source scripts/main.sh
@@ -17,6 +18,7 @@ function run-backup {
         update-sensor "${SAMBA_STATUS[1]}"
 
         # run entire backup steps
+        # shellcheck disable=SC2015
         create-backup && copy-backup && cleanup-backups-local && cleanup-backups-remote \
             && update-sensor "${SAMBA_STATUS[2]}" "ALL" \
             || update-sensor "${SAMBA_STATUS[3]}" "ALL"
@@ -49,7 +51,7 @@ if [[ "$TRIGGER_TIME" != "manual" ]]; then
         bashio::log.debug "Starting main loop ..."
         while true; do
             current_date=$(date +'%a %H:%M')
-            [[ "$TRIGGER_DAYS" =~ "${current_date:0:3}" && "$current_date" =~ "$TRIGGER_TIME" ]] && run-backup
+            [[ "$TRIGGER_DAYS" =~ ${current_date:0:3} && "$current_date" =~ $TRIGGER_TIME ]] && run-backup
 
             sleep 60
         done
