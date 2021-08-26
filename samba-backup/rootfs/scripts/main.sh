@@ -63,6 +63,7 @@ function copy-backup {
 function cleanup-backups-local {
     local snaps
     local slug
+    local name
 
     [ "$KEEP_LOCAL" == "all" ] && return 0
 
@@ -70,8 +71,9 @@ function cleanup-backups-local {
     bashio::log.debug "$snaps"
 
     echo "$snaps" | tail -n +$(($KEEP_LOCAL + 1)) | while read backup; do
-        slug=$(echo $backup | jq -r .slug)
-        bashio::log.info "Deleting ${slug} local"
+        slug=$(echo "$backup" | jq -r .slug)
+        name=$(echo "$backup" | jq -r .name)
+        bashio::log.info "Deleting ${slug} (${name}) local"
         run-and-log "ha backups remove ${slug}"
     done
 }

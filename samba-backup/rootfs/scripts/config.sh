@@ -63,15 +63,16 @@ function get-config {
     bashio::config.true 'compatibility_mode' && ALL_SHARES="${ALL_SHARES} --option=\"client min protocol\"=\"NT1\""
 
     # setup logging
-    bashio::config.exists 'log_level' && bashio::log.level $(bashio::config 'log_level')
+    export __BASHIO_LOG_TIMESTAMP="%y-%m-%d %T"
+    bashio::config.exists 'log_level' && bashio::log.level "$(bashio::config 'log_level')"
 
-    bashio::log.info "Host: ${host}"
-    bashio::log.info "Share: ${share}"
-    bashio::log.info "Target Dir: ${TARGET_DIR}"
-    bashio::log.info "Keep local: ${KEEP_LOCAL}"
-    bashio::log.info "Keep remote: ${KEEP_REMOTE}"
+    bashio::log.info "---------------------------------------------------"
+    bashio::log.info "Host/Share: ${host}/${share}"
+    bashio::log.info "Target directory: ${TARGET_DIR}"
+    bashio::log.info "Keep local/remote: ${KEEP_LOCAL}/${KEEP_REMOTE}"
     bashio::log.info "Trigger time: ${TRIGGER_TIME}"
     [[ "$TRIGGER_TIME" != "manual" ]] && bashio::log.info "Trigger days: $(echo "$TRIGGER_DAYS" | xargs)"
+    bashio::log.info "---------------------------------------------------"
 
     return 0
 }

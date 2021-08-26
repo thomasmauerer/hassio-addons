@@ -41,6 +41,7 @@ if [ "$SKIP_PRECHECK" = false ] && ! smb-precheck; then
     exit 1
 fi
 
+bashio::log.info "Samba Backup started successfully"
 
 # check the time in the background
 if [[ "$TRIGGER_TIME" != "manual" ]]; then
