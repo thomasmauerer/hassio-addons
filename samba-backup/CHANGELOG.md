@@ -1,5 +1,17 @@
 # Changelog
 
+## 5.0.0
+
+**Important**: You need to run supervisor 2021.08.0 or higher!
+
+- Replace deprecated supervisor API calls
+- Rename snapshot -> backup
+- Include date and improve logs
+- Add support to reset the Home Assistant sensor
+- Improve situation when backup could not be created
+- Update Alpine Linux to 3.14
+- Bump CLI version to 4.13.0
+
 ## 4.5.0
 
 - Increase timeout for smbclient
