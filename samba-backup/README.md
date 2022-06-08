@@ -13,8 +13,9 @@ This add-on lets you automatically create Home Assistant backups and store them 
 ## Installation
 
 1. Navigate in your Home Assistant frontend to **Supervisor** -> **Add-on Store** and add this URL as an additional repository: `https://github.com/thomasmauerer/hassio-addons`
-2. Find the "Samba Backup" add-on and click the "INSTALL" button.
-3. Configure the add-on and click on "START".
+2. Refresh your browser.
+3. Find the "Samba Backup" add-on and click the "INSTALL" button.
+4. Configure the add-on and click on "START".
 
 ## Configuration
 
