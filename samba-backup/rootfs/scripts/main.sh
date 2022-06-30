@@ -21,7 +21,7 @@ function create-backup {
     # do we need a partial backup?
     if [[ -n "$EXCLUDE_ADDONS" || -n "$EXCLUDE_FOLDERS" ]]; then
         # include all installed addons that are not listed to be excluded
-        addons=$(ha addons --raw-json | jq -rc '.data.addons[] | select (.installed == true) | .slug')
+        addons=$(ha addons --raw-json | jq -rc '.data.addons[] | .slug')
         for ad in ${addons}; do [[ ! $EXCLUDE_ADDONS =~ $ad ]] && args+=("-a" "$ad"); done
 
         # include all folders that are not listed to be excluded
