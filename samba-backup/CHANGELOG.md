@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.1.0
+
+- Implement necessary changes for Supervisor 2022.06 so that add-ons are considered in partial backups
+- Add translations
+- Update Alpine Linux to 3.16
+- Bump CLI version to 4.18.0
+
 ## 5.0.0
 
 **Important**: You need to run supervisor 2021.08.0 or higher!
