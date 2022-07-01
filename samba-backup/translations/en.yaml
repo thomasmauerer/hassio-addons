@@ -1,0 +1,53 @@
+---
+configuration:
+  host:
+    name: Host
+    description: The DNS or IP address of the Samba share, NAS, etc.
+  share:
+    name: Share
+    description: The name of the share.
+  target_dir:
+    name: Target directory
+    description: The directory inside the share where the backups will be stored.
+  username:
+    name: Username
+    description: The username to access the Samba share.
+  password:
+    name: Password
+    description: The password to access the Samba share.
+  keep_local:
+    name: Keep local
+    description: The number of backups to be preserved on the device.
+  keep_remote:
+    name: Keep remote
+    description: The number of backups to be preserved on the share.
+  trigger_time:
+    name: Trigger time
+    description: The time (format HH:MM) at which a backup will be triggered.
+  trigger_days:
+    name: Trigger days
+    description: The days on which a backup will be triggered.
+  exclude_addons:
+    name: Exclude add-ons
+    description: A list of add-ons to be excluded in the backup.
+  exclude_folders:
+    name: Exclude folders
+    description: A list of folders to be excluded in the backup.
+  backup_name:
+    name: Backup name
+    description: The name of the backup.
+  backup_password:
+    name: Backup password
+    description: If specified, the backups will be password protected.
+  workgroup:
+    name: Workgroup
+    description: The workgroup to access the Samba share.
+  compatibility_mode:
+    name: Compatibility mode
+    description: Enables old legacy SMB protocols. NOT recommended!
+  skip_precheck:
+    name: Skip precheck
+    description: Starts the addon without any checks whether the share is set up correctly.
+  log_level:
+    name: Log level
+    description: Sets the verbosity of log output.
