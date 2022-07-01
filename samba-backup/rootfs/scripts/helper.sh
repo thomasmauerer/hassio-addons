@@ -1,4 +1,5 @@
-#!/usr/bin/env bashio
+#!/command/with-contenv bashio
+# shellcheck shell=bash
 
 # ------------------------------------------------------------------------------
 # Create the backup name by replacing all name patterns.

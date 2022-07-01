@@ -1,4 +1,5 @@
-#!/usr/bin/env bashio
+#!/command/with-contenv bashio
+# shellcheck shell=bash
 
 declare SAMBA_STATUS=(IDLE RUNNING SUCCEEDED FAILED)
 declare SENSOR_NAME="sensor.samba_backup"

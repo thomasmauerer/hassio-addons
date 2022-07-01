@@ -1,4 +1,5 @@
-#!/usr/bin/env bashio
+#!/command/with-contenv bashio
+# shellcheck shell=bash
 # shellcheck disable=SC1091
 
 source scripts/config.sh

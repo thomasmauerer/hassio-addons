@@ -1,4 +1,5 @@
-#!/usr/bin/env bashio
+#!/command/with-contenv bashio
+# shellcheck shell=bash
 
 # ------------------------------------------------------------------------------
 # Perform a pre-check if the Samba share is configured correctly.

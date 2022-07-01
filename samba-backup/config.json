@@ -13,6 +13,7 @@
   "stdin": true,
   "map": ["backup:rw"],
   "image": "thomasmauerer/samba-backup-{arch}",
+  "init": false,
   "options": {
     "host": null,
     "share": null,
