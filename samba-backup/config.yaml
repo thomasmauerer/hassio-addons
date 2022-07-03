@@ -59,4 +59,4 @@ schema:
   workgroup: str?
   compatibility_mode: bool?
   skip_precheck: bool?
-  log_level: list(debug|info|warning|error)
+  log_level: list(debug|info|warning|error)?
