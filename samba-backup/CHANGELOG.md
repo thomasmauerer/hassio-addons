@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.1.1
+
+- Fix bug that add-on does not start without a log level
+
 ## 5.1.0
 
 - Implement necessary changes for Supervisor 2022.06 so that add-ons are considered in partial backups
