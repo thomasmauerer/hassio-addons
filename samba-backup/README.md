@@ -4,6 +4,8 @@
 
 ![Current version][version]
 
+[<img src="https://raw.githubusercontent.com/thomasmauerer/hassio-addons/master/samba-backup/images/donate-paypal.svg" width=200/>](https://www.paypal.com/donate/?hosted_button_id=LP732BXWCKM3C)
+
 Create backups and store them on a Samba share.
 
 ## About
@@ -23,21 +25,24 @@ The `host` and the `share` parameters are always required. If you do not specify
 
 _Example configuration_:
 
-```json
-{
-  "host": "192.168.178.100",
-  "share": "my-share",
-  "target_dir": "backups/ha-backups",
-  "username": "my-user",
-  "password": "my-password",
-  "keep_local": "5",
-  "keep_remote": "20",
-  "trigger_time": "04:00",
-  "trigger_days": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-  "exclude_addons": ["core_ssh", "core_duckdns"],
-  "exclude_folders": ["ssl"],
-  "backup_name": "{type} Backup {date}"
-}
+```yaml
+host: 192.168.178.100
+share: my-share
+target_dir: backups/ha-backups
+username: my-user
+password: my-password
+keep_local: 5
+keep_remote: 10
+trigger_time: 04:00
+trigger_days:
+  - Mon
+  - Wed
+  - Fri
+exclude_addons:
+  - core_mariadb
+exclude_folders:
+  - media
+backup_name: {type} Backup {date}
 ```
 
 **Note**: _This is just an example, don't copy and paste it! Create your own!_
@@ -46,7 +51,7 @@ Please check the **[Documentation](https://github.com/thomasmauerer/hassio-addon
 
 ## Want to contribute?
 
-Any kind of help or useful input/feedback is appreciated! If you want to create a pull request, please create it against the `dev` branch. You can also check the [forum thread](https://community.home-assistant.io/t/samba-backup-create-and-store-snapshots-on-a-samba-share/199471) of this add-on for infos and discussions.
+Any kind of help or useful input/feedback is appreciated! Please create pull requests against the `dev` branch. You can also check the [forum thread](https://community.home-assistant.io/t/samba-backup-create-and-store-snapshots-on-a-samba-share/199471) of this add-on for infos and discussions.
 
 [aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
