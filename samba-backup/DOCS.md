@@ -38,7 +38,7 @@ The number of backups to be preserved on the Samba share. Set `all` if you do no
 
 ### Option: `trigger_time`
 
-The time at which a backup will be triggered. The input must be given in format 'HH:MM', e.g. '04:00' which means 4 am. You can also use your own Home Assistant automations to trigger a backup - see [Manual Triggers](https://github.com/thomasmauerer/hassio-addons/blob/master/samba-backup/DOCS.md#manual-triggers) for more information. If you want to disable the time-based schedule completely, set the option to `manual`.
+The time at which a backup will be triggered. The input must be given in format 'HH:MM', e.g. '04:00' which means 4 am. You can additionally use your own Home Assistant automations to trigger a backup - see [Manual Triggers](https://github.com/thomasmauerer/hassio-addons/blob/master/samba-backup/DOCS.md#manual-triggers) for more information. If you want to disable the time-based schedule and only use your own automations, scripts, etc., set the option to `manual`.
 
 ### Option: `trigger_days`
 
