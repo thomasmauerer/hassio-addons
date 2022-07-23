@@ -105,8 +105,11 @@ The sensor includes the following attributes:
 - `last backup`: The date of the last successful backup
 
 
-There is a known limitation that the sensor will be unavailable if you restart Home Assistant. This is caused by the way Home Assistant handles sensors which are not backed up by an entity, but instead come from an add-on or AppDaemon. You can easily fix that with an automation that triggers at startup:
+There is a known limitation that the sensor will be unavailable if you restart Home Assistant. This is caused by the way Home Assistant handles sensors which are not backed up by an entity, but instead come from an add-on or AppDaemon. You can easily fix that with the following blueprint:
 
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://github.com/thomasmauerer/hassio-addons/blob/master/samba-backup/blueprints/restore_samba_backup_sensor.yaml)
+
+Or use this automation directly:
 
 ```yaml
 automation:
