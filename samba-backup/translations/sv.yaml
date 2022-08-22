@@ -48,5 +48,5 @@ configuration:
     name: Skippa förkontroll
     description: Starta tillägget utan att kontrollera om utdelningen är korret inställd.
   log_level:
-    name: Log level
-    description: Sets the verbosity of log output.
+    name: Loggnivå
+    description: Sätter känsligheten på hur mycket information som ska skickas ut i loggen.
