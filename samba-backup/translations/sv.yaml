@@ -1,0 +1,52 @@
+configuration:
+  host:
+    name: Värd
+    description: 'IP-adressen till Samba share, NAS, etc.'
+  share:
+    name: Utdelning
+    description: Namnet på utdelningen share.
+  target_dir:
+    name: målmapp
+    description: Mappen i den utdelade platsen där kopior ska sparas.
+  username:
+    name: Användarnamn
+    description: Användarnamnet för att få tillgång till din Samba share.
+  password:
+    name: Lösenord
+    description: Lösenordet för att få tillgång till din Samba share.
+  keep_local:
+    name: Behåll lokalt
+    description: Antalet kopior som ska behållas lokalt på enheten.
+  keep_remote:
+    name: Behåll fjärrstyrt
+    description: Antalet kopior som ska behållas i den utdelade mappen.
+  trigger_time:
+    name: Trigger tid
+    description: 'Tidpunkten (format HH:MM) för när en kopia skall göras.'
+  trigger_days:
+    name: Trigger dag
+    description: Vilka dagar en kopia skall göras.
+  exclude_addons:
+    name: Exkludera tillägg
+    description: En lista på de tillägg som ska exkluderas i en kopia.
+  exclude_folders:
+    name: Exkludera mappar
+    description: En lista på de mappar som ska exkluderas i en kopia.
+  backup_name:
+    name: Namn på kopia
+    description: Namnet på kopian.
+  backup_password:
+    name: Lösenord på kopia
+    description: Om specificerat så kommer varje kopia tilldelas ett lösenord.
+  workgroup:
+    name: Arbetsgrupp
+    description: Arbetsgruppen för att få tillgång till Samba share.
+  compatibility_mode:
+    name: Kompabilitetsläge
+    description: Aktiverar äldre SMB protokoll. INTE rekommenderat!
+  skip_precheck:
+    name: Skippa förkontroll
+    description: Starta tillägget utan att kontrollera om utdelningen är korret inställd.
+  log_level:
+    name: Loggnivå
+    description: Sätter känsligheten på hur mycket information som ska skickas ut i loggen.
