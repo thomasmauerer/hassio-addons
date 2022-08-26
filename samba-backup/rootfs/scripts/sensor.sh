@@ -156,6 +156,8 @@ function ha-post-sensor {
     local status
     local response
 
+    bashio::log.debug "Posting sensor data to API at ${SENSOR_URL}"
+
     if ! response=$(curl --silent --show-error \
         --write-out '\n%{http_code}' --request "POST" \
         -H "Authorization: Bearer ${__BASHIO_SUPERVISOR_TOKEN}" \

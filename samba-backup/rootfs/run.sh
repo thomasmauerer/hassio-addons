@@ -8,6 +8,7 @@ source scripts/helper.sh
 source scripts/precheck.sh
 source scripts/sensor.sh
 
+export __BASHIO_LOG_TIMESTAMP="%y-%m-%d %T"
 
 function run-backup {
     (
@@ -15,7 +16,6 @@ function run-backup {
         flock -n -x 200 || { bashio::log.warning "Backup already running. Trigger ignored."; return 0; }
 
         bashio::log.info "Backup running ..."
-        get-sensor
         update-sensor "${SAMBA_STATUS[1]}"
 
         # run entire backup steps

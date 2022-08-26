@@ -63,9 +63,14 @@ function run-and-log {
     local cmd="$1"
     local result
 
-    result=$(eval "$cmd") \
-        && bashio::log.debug "$result" \
-        || { bashio::log.warning "$result"; return 1; }
+    if result=$(eval "$cmd"); then
+        [ -n "$result" ] && bashio::log.debug "$result"
+    else
+        bashio::log.warning "$result"
+        return 1
+    fi
+
+    return 0
 }
 
 # ------------------------------------------------------------------------------

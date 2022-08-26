@@ -64,10 +64,6 @@ function get-config {
     bashio::config.true 'compatibility_mode' && SMB="${SMB} --option=\"client min protocol\"=\"NT1\""
     bashio::config.true 'compatibility_mode' && ALL_SHARES="${ALL_SHARES} --option=\"client min protocol\"=\"NT1\""
 
-    # setup logging
-    export __BASHIO_LOG_TIMESTAMP="%y-%m-%d %T"
-    bashio::config.exists 'log_level' && bashio::log.level "$(bashio::config 'log_level')"
-
     bashio::log.info "---------------------------------------------------"
     bashio::log.info "Host/Share: ${host}/${share}"
     bashio::log.info "Target directory: ${TARGET_DIR}"

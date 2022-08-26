@@ -76,7 +76,7 @@ function cleanup-backups-local {
     [ "$KEEP_LOCAL" == "all" ] && return 0
 
     snaps=$(ha backups --raw-json | jq -c '.data.backups[] | {date,slug,name}' | sort -r)
-    bashio::log.debug "$snaps"
+    bashio::log.debug "List of local backups:\n$snaps"
 
     echo "$snaps" | tail -n +$((KEEP_LOCAL + 1)) | while read -r backup; do
         slug=$(echo "$backup" | jq -r .slug)
@@ -101,7 +101,7 @@ function cleanup-backups-remote {
         theDate=$(echo "$a $b $c $d" | xargs -i date +'%Y-%m-%d %H:%M' -d "{}")
         echo "$theDate $name"
     done | sort -r)"
-    bashio::log.debug "$snaps"
+    bashio::log.debug "List of remote backups:\n$snaps"
 
     echo "$snaps" | tail -n +$((KEEP_REMOTE + 1)) | while read -r _ _ name; do
         bashio::log.info "Deleting ${name} on share"
