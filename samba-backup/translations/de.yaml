@@ -1,0 +1,52 @@
+configuration:
+  host:
+    name: Host Adresse
+    description: DNS Name oder IP Adresse des Hostsystems, NAS, etc. auf dem die Samba Freigabe eingerichtet wurde.
+  share:
+    name: Freigabe
+    description: Name der Samba Freigabe.
+  target_dir:
+    name: Zielverzeichnis
+    description: Verzeichnis innerhalb der Freigabe, in dem Sicherungen abgelegt werden.
+  username:
+    name: Benutzername
+    description: Benutzername für die Samba Freigabe.
+  password:
+    name: Passwort
+    description: Passwort für die Samba Freigabe.
+  keep_local:
+    name: Lokal behalten
+    description: Anzahl der Sicherungen, die lokal in Home Assistant erhalten bleiben.
+  keep_remote:
+    name: Remote behalten
+    description: Anzahl der Sicherungen, die im freigegebenen Verzeichnis erhalten bleiben.
+  trigger_time:
+    name: Sicherungszeitpunkt
+    description: Zeitpunkt (Format HH:MM) für die Erstellung einer Sicherung.
+  trigger_days:
+    name: Sicherungstage
+    description: Tage an denen eine Sicherung erstellt wird.
+  exclude_addons:
+    name: Add-ons ausschließen
+    description: Liste an Add-ons, die nicht gesichert werden.
+  exclude_folders:
+    name: Ordner ausschließen
+    description: Liste an Ordnern, die nicht gesichert werden.
+  backup_name:
+    name: Sicherungsname
+    description: Name der Sicherung.
+  backup_password:
+    name: Sicherungspasswort
+    description: Passwort mit dem die Sicherung geschützt wird.
+  workgroup:
+    name: Arbeitsgruppe
+    description: Arbeitsgruppe für den Zugriff auf die Samba Freigabe.
+  compatibility_mode:
+    name: Kompatibilitätsmodus
+    description: Schaltet Unterstützung für alte Legacy SMB Protokolle ein. NICHT empfohlen!
+  skip_precheck:
+    name: Checks überspringen
+    description: Startet das Add-on ohne Checks ob die Samba Freigabe korrekt eingerichtet wurde.
+  log_level:
+    name: Log Level
+    description: Steuert wie viele Log Einträge das Add-on schreibt.

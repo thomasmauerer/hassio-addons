@@ -1,7 +1,7 @@
 configuration:
   host:
     name: Värd
-    description: 'IP-adressen till Samba share, NAS, etc.'
+    description: IP-adressen till Samba share, NAS, etc.
   share:
     name: Utdelning
     description: Namnet på utdelningen share.
@@ -22,7 +22,7 @@ configuration:
     description: Antalet kopior som ska behållas i den utdelade mappen.
   trigger_time:
     name: Trigger tid
-    description: 'Tidpunkten (format HH:MM) för när en kopia skall göras.'
+    description: Tidpunkten (format HH:MM) för när en kopia skall göras.
   trigger_days:
     name: Trigger dag
     description: Vilka dagar en kopia skall göras.
