@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.1.2
+
+- Add german and swedish translation
+- Improve log output
+
 ## 5.1.1
 
 - Fix bug that add-on does not start without a log level
