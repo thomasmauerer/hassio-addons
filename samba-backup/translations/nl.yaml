@@ -1,0 +1,53 @@
+---
+configuration:
+  host:
+    name: Host
+    description: Het DNS- of IP-adres van de Samba-share, NAS, enz.
+  share:
+    name: Share
+    description: De naam van de share.
+  target_dir:
+    name: Doelmap
+    description: De map binnen de share waar de back-ups worden opgeslagen.
+  username:
+    name: Gebruikersnaam
+    description: De gebruikersnaam voor toegang tot de Samba-share.
+  password:
+    name: Wachtwoord
+    description: Het wachtwoord voor toegang tot de Samba-share.
+  keep_local:
+    name: Keep local
+    description: Het aantal te bewaren back-ups op het apparaat.
+  keep_remote:
+    name: Keep remote
+    description: Het aantal te bewaren back-ups op de share.
+  trigger_time:
+    name: Triggertijd
+    description: De tijd (formaat HH:MM) waarop een back-up wordt getriggerd.
+  trigger_days:
+    name: Trigger days
+    description: De dagen waarop een back-up zal worden getriggerd.
+  exclude_addons:
+    name: Uitsluiten add-ons
+    description: Een lijst met add-ons die moeten worden uitgesloten in de back-up.
+  exclude_folders:
+    name: Mappen uitsluiten
+    description: Een lijst met mappen die in de back-up moeten worden uitgesloten.
+  backup_name:
+    name: Naam van de back-up
+    description: De naam van de back-up.
+  backup_password:
+    name: Back-up wachtwoord
+    description: Indien opgegeven, worden de back-ups beveiligd met een wachtwoord.
+  workgroup:
+    name: Werkgroep
+    description: De werkgroep voor toegang tot de Samba-share.
+  compatibility_mode:
+    name: Compatibiliteitsmodus
+    description: Schakelt oude legacy SMB protocollen in. NIET aanbevolen!
+  skip_precheck:
+    name: Skip precheck
+    description: Start de addon zonder enige controle of de share correct is ingesteld.
+  log_level:
+    name: Logniveau
+    description: Stelt de verbositeit van de loguitvoer in.
