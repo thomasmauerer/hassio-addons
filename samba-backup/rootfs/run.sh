@@ -32,17 +32,18 @@ function run-backup {
 }
 
 
-# read in user config
+# init config and sensor
 get-config
-
-# setup Home Assistant sensor
 get-sensor
-update-sensor "${SAMBA_STATUS[0]}"
 
-# run precheck and exit entire addon
-if [ "$SKIP_PRECHECK" = false ] && ! smb-precheck; then
+# run precheck and exit entire addon in case the check fails
+if [ "$SKIP_PRECHECK" = true ]; then
+    update-sensor "${SAMBA_STATUS[0]}"
+elif ! smb-precheck; then
     update-sensor "${SAMBA_STATUS[3]}"
     exit 1
+else
+    update-sensor "${SAMBA_STATUS[0]}" "ALL"
 fi
 
 bashio::log.info "Samba Backup started successfully"

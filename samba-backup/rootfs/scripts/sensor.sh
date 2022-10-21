@@ -70,11 +70,16 @@ function update-sensor {
 
     if bashio::var.has_value "${all}"; then
         if response=$(ha backups --raw-json | jq ".data.backups[].slug"); then
-            BACKUPS_LOCAL=$(echo "$response" | wc -l)
+            [ -n "$response" ] && BACKUPS_LOCAL=$(echo "$response" | wc -l) || BACKUPS_LOCAL="0"
         fi
 
         if response=$(eval "${SMB} -c 'cd \"${TARGET_DIR}\"; ls'"); then
-            BACKUPS_REMOTE=$(echo "$response" | grep -E '\<([0-9a-f]{8}|Samba_Backup_.*)\.tar\>' | wc -l)
+            # grep returns non-zero exit code if there are no matches
+            if response=$(echo "$response" | grep -E '\<([0-9a-f]{8}|Samba_Backup_.*)\.tar\>'); then
+                BACKUPS_REMOTE=$(echo "$response" | wc -l)
+            else
+                BACKUPS_REMOTE="0"
+            fi
         fi
 
         if [ "$CURRENT_STATUS" = "${SAMBA_STATUS[2]}" ]; then
@@ -138,6 +143,7 @@ function reset-counter {
     TOTAL_FAIL="0"
 
     update-sensor "$CURRENT_STATUS"
+    return 0
 }
 
 
