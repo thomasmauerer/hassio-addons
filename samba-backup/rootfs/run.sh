@@ -16,6 +16,7 @@ function run-backup {
         flock -n -x 200 || { bashio::log.warning "Backup already running. Trigger ignored."; return 0; }
 
         bashio::log.info "Backup running ..."
+        get-sensor
         update-sensor "${SAMBA_STATUS[1]}"
 
         # run entire backup steps
@@ -70,7 +71,7 @@ while true; do
         restore-sensor
 
     elif [ "$input" = "reset-counter" ]; then
-        reset-counter
+        get-sensor && reset-counter
         bashio::log.info "Counter variables reset successfully"
 
     elif [ "$input" = "trigger" ]; then

@@ -46,10 +46,8 @@ function get-sensor {
         fi
     fi
 
-    bashio::log.debug "Backups local: ${BACKUPS_LOCAL}"
-    bashio::log.debug "Backups remote: ${BACKUPS_REMOTE}"
-    bashio::log.debug "Total backups succeeded: ${TOTAL_SUCCESS}"
-    bashio::log.debug "Total backups failed: ${TOTAL_FAIL}"
+    bashio::log.debug "Backups local/remote: ${BACKUPS_LOCAL}/${BACKUPS_REMOTE}"
+    bashio::log.debug "Total backups succeeded/failed: ${TOTAL_SUCCESS}/${TOTAL_FAIL}"
     bashio::log.debug "Last backup: ${LAST_BACKUP}"
 
     return 0
