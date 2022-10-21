@@ -1,6 +1,6 @@
 ---
 name: Samba Backup
-version: 5.1.2
+version: 5.2.0
 slug: samba_backup
 description: Create backups and store them on a Samba share
 url: https://github.com/thomasmauerer/hassio-addons/tree/master/samba-backup

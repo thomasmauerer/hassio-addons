@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.2.0
+
+- Add dutch translation
+- Fix incorrect sensor values during backup run
+- Fix problem with reset-counter function
+- Check current number of stored backups at startup
+
 ## 5.1.2
 
 - Add german and swedish translation

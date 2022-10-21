@@ -51,11 +51,11 @@ Please check the **[Documentation](https://github.com/thomasmauerer/hassio-addon
 
 ## Want to contribute?
 
-Any kind of help or useful input/feedback is appreciated! Please create pull requests against the `dev` branch. You can also check the [forum thread](https://community.home-assistant.io/t/samba-backup-create-and-store-snapshots-on-a-samba-share/199471) of this add-on for infos and discussions.
+Any kind of help or useful input/feedback is appreciated! Please also check the [forum thread](https://community.home-assistant.io/t/samba-backup-create-and-store-snapshots-on-a-samba-share/199471) of this add-on for infos and discussions.
 
 [aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
 [armhf-shield]: https://img.shields.io/badge/armhf-yes-green.svg
 [armv7-shield]: https://img.shields.io/badge/armv7-yes-green.svg
 [i386-shield]: https://img.shields.io/badge/i386-yes-green.svg
-[version]: https://img.shields.io/badge/version-v5.1.2-blue.svg
+[version]: https://img.shields.io/badge/version-v5.2.0-blue.svg
