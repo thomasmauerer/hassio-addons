@@ -1,5 +1,5 @@
 {
-  "name": "Example devcontainer for add-on repositories",
+  "name": "Samba Backup DevContainer",
   "image": "ghcr.io/home-assistant/devcontainer:addons",
   "appPort": ["7123:8123", "7357:4357"],
   "postStartCommand": "bash devcontainer_bootstrap",
@@ -20,5 +20,7 @@
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
     "files.trimTrailingWhitespace": true
-  }
+  },
+  "remoteUser": "root",
+  "containerUser": "root"
 }
