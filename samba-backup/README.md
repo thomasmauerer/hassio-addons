@@ -49,6 +49,9 @@ backup_name: {type} Backup {date}
 
 Please check the **[Documentation](https://github.com/thomasmauerer/hassio-addons/blob/master/samba-backup/DOCS.md)** for a complete reference of all configuration options.
 
+## Community Videos about Home Assistant Add-on: Samba Backup
+[<img src="http://img.youtube.com/vi/wUnvTwyDuNU/0.jpg" width="300"/>](https://youtu.be/wUnvTwyDuNU "KPeyanski")
+
 ## Want to contribute?
 
 Any kind of help or useful input/feedback is appreciated! Please also check the [forum thread](https://community.home-assistant.io/t/samba-backup-create-and-store-snapshots-on-a-samba-share/199471) of this add-on for infos and discussions.
