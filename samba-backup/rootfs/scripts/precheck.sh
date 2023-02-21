@@ -16,10 +16,10 @@ function smb-precheck {
 
         # host not found
         if [[ "$result" =~ "NT_STATUS_NOT_FOUND" ]]; then
-            bashio::log.fatal "The provided host cannot be found. Please check your config and network."
+            bashio::log.fatal "The provided host cannot be found. If you've specified a DNS name, please try using an IP address instead."
 
         # host unreachable
-        if [[ "$result" =~ "NT_STATUS_HOST_UNREACHABLE" ]]; then
+        elif [[ "$result" =~ "NT_STATUS_HOST_UNREACHABLE" ]]; then
             bashio::log.fatal "The provided host is unreachable. Please check your config and network."
 
         # SMB1 problem
