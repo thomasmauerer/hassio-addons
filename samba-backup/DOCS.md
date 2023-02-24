@@ -171,3 +171,17 @@ data:
 ```
 
 _Extended trigger_
+
+## FAQ
+
+### Why is the sensor missing when I restart Home Assistant?
+
+This is a known limitation, but it can easily be fixed with an automation. See the [Home Assistant sensor](https://github.com/thomasmauerer/hassio-addons/blob/master/samba-backup/DOCS.md#home-assistant-sensor) section for more details. Apart from that, check that Samba Backup is really running after restart. If not the automation will not have any effect.
+
+### Can I use Samba Backup to upload backups to an online storage via the internet?
+
+Samba Backup is based on the SMB protocol, so as long as the online storage supports SAMBA/CIFS it is possible. However, keep in mind that some SMB implementations rely on NetBIOS which some routers block by default. Therefore it could be necessary to disable the NetBIOS filter in the router settings.
+
+### Why do I get this error at startup "Server does not support EXTENDED_SECURITY"?
+
+If you see this error in the logs, it means that your NAS only supports an outdated authentication mechanism which Samba Backup refuses. The SMB options to overcome this issue are already marked as deprecated and will be removed in the future. Hence, I will not add support for that. Please use a different NAS/share in this case. 
