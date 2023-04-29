@@ -14,7 +14,7 @@ The name of the Samba share.
 
 ### Option: `target_dir`
 
-The target directory on the Samba share in which the backups will be stored. If not specified the backups will be stored in the root directory.
+The target directory on the Samba share in which the backups will be stored. The directory must be a folder *inside* your share. Leave this option empty if you do not use sub folders and instead want the backups to be stored in the root directory.
 
 **Note**: _The directory must exist and write permissions must be granted._
 
