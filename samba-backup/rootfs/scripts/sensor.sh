@@ -4,7 +4,7 @@
 declare SAMBA_STATUS=(IDLE RUNNING SUCCEEDED FAILED)
 declare SENSOR_NAME="sensor.samba_backup"
 declare SENSOR_URL="/core/api/states/${SENSOR_NAME}"
-declare STORAGE_FILE="/backup/.samba_backup.sensor"
+declare STORAGE_FILE="/config/.samba_backup.sensor"
 
 declare CURRENT_STATUS
 
