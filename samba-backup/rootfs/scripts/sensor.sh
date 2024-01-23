@@ -13,6 +13,7 @@ declare BACKUPS_REMOTE="0"
 declare TOTAL_SUCCESS="0"
 declare TOTAL_FAIL="0"
 declare LAST_BACKUP="never"
+declare LAST_BACKUP_SUCCESSFUL="false"
 
 
 # ------------------------------------------------------------------------------
@@ -44,11 +45,16 @@ function get-sensor {
         if result=$(echo "$storage" | jq -r ".attributes.last_backup" 2>/dev/null); then
             [[ "$result" != null ]] && LAST_BACKUP="$result"
         fi
+
+        if result=$(echo "$storage" | jq -r ".attributes.last_backup_successful" 2>/dev/null); then
+            [[ "$result" != null ]] && LAST_BACKUP_SUCCESSFUL="$result"
+        fi
     fi
 
     bashio::log.debug "Backups local/remote: ${BACKUPS_LOCAL}/${BACKUPS_REMOTE}"
     bashio::log.debug "Total backups succeeded/failed: ${TOTAL_SUCCESS}/${TOTAL_FAIL}"
     bashio::log.debug "Last backup: ${LAST_BACKUP}"
+    bashio::log.debug "Last backup successful: ${LAST_BACKUP_SUCCESSFUL}"
 
     return 0
 }
@@ -85,8 +91,10 @@ function update-sensor {
         if [ "$CURRENT_STATUS" = "${SAMBA_STATUS[2]}" ]; then
             TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
             LAST_BACKUP=$(date +'%Y-%m-%d %H:%M')
+            LAST_BACKUP_SUCCESSFUL=true
         elif [ "$CURRENT_STATUS" = "${SAMBA_STATUS[3]}" ]; then
             TOTAL_FAIL=$((TOTAL_FAIL + 1))
+            LAST_BACKUP_SUCCESSFUL=false
         fi
     fi
 
@@ -97,6 +105,7 @@ function update-sensor {
     --arg ts "$TOTAL_SUCCESS" \
     --arg tf "$TOTAL_FAIL" \
     --arg lb "$LAST_BACKUP" \
+    --arg lbs "$LAST_BACKUP_SUCCESSFUL" \
     '{
         "state": $s,
         "attributes": {
@@ -105,7 +114,8 @@ function update-sensor {
             "backups_remote": $br,
             "total_backups_succeeded": $ts,
             "total_backups_failed": $tf,
-            "last_backup": $lb
+            "last_backup": $lb,
+            "last_backup_successful": $lbs
         }
     }')
 
