@@ -2,6 +2,9 @@ configuration:
   host:
     name: Värd
     description: IP-adressen till Samba share, NAS, etc.
+  host_mac:
+    name: Host MAC
+    description: MAC address of the Samba share, NAS, etc.
   share:
     name: Utdelning
     description: Namnet på utdelningen share.
@@ -44,6 +47,9 @@ configuration:
   compatibility_mode:
     name: Kompabilitetsläge
     description: Aktiverar äldre SMB protokoll. INTE rekommenderat!
+  wol:
+    name: Wake on LAN
+    description: Wakes up the host system before the backup. The host MAC must be specified for this
   skip_precheck:
     name: Skippa förkontroll
     description: Starta tillägget utan att kontrollera om utdelningen är korret inställd.

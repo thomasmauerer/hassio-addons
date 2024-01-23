@@ -1,6 +1,6 @@
 ---
 name: Samba Backup
-version: 5.2.0
+version: 5.3.0
 slug: samba_backup
 description: Create backups and store them on a Samba share
 url: https://github.com/thomasmauerer/hassio-addons/tree/master/samba-backup
@@ -12,6 +12,7 @@ arch:
   - i386
 startup: application
 boot: auto
+host_network: true
 homeassistant_api: true
 hassio_api: true
 hassio_role: manager
@@ -41,6 +42,7 @@ options:
   exclude_folders: []
 schema:
   host: str
+  host_mac: str?
   share: str
   target_dir: str
   username: str
@@ -59,4 +61,5 @@ schema:
   workgroup: str?
   compatibility_mode: bool?
   skip_precheck: bool?
+  wol: bool?
   log_level: list(debug|info|warning|error)?

@@ -2,6 +2,9 @@ configuration:
   host:
     name: Host Adresse
     description: DNS Name oder IP Adresse des Hostsystems, NAS, etc. auf dem die Samba Freigabe eingerichtet wurde.
+  host_mac:
+    name: Host MAC
+    description: MAC Adresse des Hostsystems, NAS, etc. auf dem die Samba Freigabe eingerichtet wurde.
   share:
     name: Freigabe
     description: Name der Samba Freigabe.
@@ -44,6 +47,9 @@ configuration:
   compatibility_mode:
     name: Kompatibilitätsmodus
     description: Schaltet Unterstützung für alte Legacy SMB Protokolle ein. NICHT empfohlen!
+  wol:
+    name: Wake on LAN
+    description: Weckt das Hostsystem vor der Sicherung auf. Die Host MAC muss dafür angegeben sein
   skip_precheck:
     name: Checks überspringen
     description: Startet das Add-on ohne Checks ob die Samba Freigabe korrekt eingerichtet wurde.

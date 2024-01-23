@@ -13,6 +13,9 @@ declare EXCLUDE_FOLDERS
 declare BACKUP_NAME
 declare BACKUP_PWD
 declare SKIP_PRECHECK
+declare HOST
+declare HOST_MAC
+declare WOL
 
 
 # smbclient command strings
@@ -24,13 +27,11 @@ declare ALL_SHARES
 # Read and print config.
 # ------------------------------------------------------------------------------
 function get-config {
-    local host
     local share
     local username
     local password
     local workgroup
 
-    host=$(bashio::config 'host' | escape-input)
     share=$(bashio::config 'share' | escape-input)
     username=$(bashio::config 'username' | escape-input)
     password=$(bashio::config 'password' | escape-input)
@@ -43,17 +44,25 @@ function get-config {
     TRIGGER_DAYS=$(bashio::config 'trigger_days')
     EXCLUDE_ADDONS=$(bashio::config 'exclude_addons')
     EXCLUDE_FOLDERS=$(bashio::config 'exclude_folders')
+    HOST=$(bashio::config 'host' | escape-input)
 
     bashio::config.exists 'backup_name' && BACKUP_NAME=$(bashio::config 'backup_name') || BACKUP_NAME=""
     bashio::config.exists 'backup_password' && BACKUP_PWD=$(bashio::config 'backup_password') || BACKUP_PWD=""
     bashio::config.true 'skip_precheck' && SKIP_PRECHECK=true || SKIP_PRECHECK=false
+    bashio::config.exists 'host_mac' && HOST_MAC=$(bashio::config 'host_mac' | escape-input) || HOST_MAC=""
+    bashio::config.true 'wol' && WOL=true || WOL=false
 
+    if [ "$WOL" = true ] && [ -z "$HOST_MAC" ]; then
+        bashio::log.fatal "WOL is enabled, but HOST_MAC is empty. Please provide a valid MAC address for Wake-on-LAN."
+        return 1
+    fi
+    
     if [[ -n "$username" && -n "$password" ]]; then
-        SMB="smbclient -U \"${username}\"%\"${password}\" \"//${host}/${share}\" 2>&1 -t 180"
-        ALL_SHARES="smbclient -U \"${username}\"%\"${password}\" -L \"//${host}\" 2>&1"
+        SMB="smbclient -U \"${username}\"%\"${password}\" \"//${HOST}/${share}\" 2>&1 -t 180"
+        ALL_SHARES="smbclient -U \"${username}\"%\"${password}\" -L \"//${HOST}\" 2>&1"
     else
-        SMB="smbclient -N \"//${host}/${share}\" 2>&1 -t 180"
-        ALL_SHARES="smbclient -N -L \"//${host}\" 2>&1"
+        SMB="smbclient -N \"//${HOST}/${share}\" 2>&1 -t 180"
+        ALL_SHARES="smbclient -N -L \"//${HOST}\" 2>&1"
     fi
 
     # non-default workgroup?
@@ -65,7 +74,8 @@ function get-config {
     bashio::config.true 'compatibility_mode' && ALL_SHARES="${ALL_SHARES} --option=\"client min protocol\"=\"NT1\""
 
     bashio::log.info "---------------------------------------------------"
-    bashio::log.info "Host/Share: ${host}/${share}"
+    bashio::log.info "Host/Share: ${HOST}/${share}"
+    [[ -n "$HOST_MAC" ]] && bashio::log.info "Host MAC: ${HOST_MAC}"
     bashio::log.info "Target directory: ${TARGET_DIR}"
     bashio::log.info "Keep local/remote: ${KEEP_LOCAL}/${KEEP_REMOTE}"
     bashio::log.info "Trigger time: ${TRIGGER_TIME}"

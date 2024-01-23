@@ -48,6 +48,29 @@ function copy-backup {
         return 1
     fi
 
+    if [ "$WOL" = true ]; then
+        # Check if the host is already online
+        bashio::log.info "Checking if $HOST is already online."
+        is-host-online "$HOST"
+        exit_code=$?
+
+        if [ $exit_code -eq 0 ]; then
+            bashio::log.info "Host $HOST is already online. Skipping wake-up process."
+        elif [ $exit_code -eq 1 ]; then
+            bashio::log.info "Host $HOST is not online. Waking up $HOST."
+            wake-host "$HOST_MAC"
+            wait-for-host-online "$HOST"
+            exit_code=$?
+            bashio::log.info "Waiting for 60 seconds to allow $HOST to settle. Then starting the backup copying process."
+            sleep 60 # Wait for 60 seconds to allow everything to settle. Some systems like Unraid need to start the array after booting up.
+        fi
+
+        if [ $exit_code -ne 0 ]; then
+            bashio::log.warning "Could not copy backup ${SLUG} to share."
+            return 1
+        fi
+    fi
+
     store_name=$(generate-filename "$SNAP_NAME")
 
     # append number to filename if already existing

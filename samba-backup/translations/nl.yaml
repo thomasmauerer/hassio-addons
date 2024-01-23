@@ -3,6 +3,9 @@ configuration:
   host:
     name: Host
     description: Het DNS- of IP-adres van de Samba-share, NAS, enz.
+  host_mac:
+    name: Host MAC
+    description: MAC address of the Samba share, NAS, etc.
   share:
     name: Share
     description: De naam van de share.
@@ -45,6 +48,9 @@ configuration:
   compatibility_mode:
     name: Compatibiliteitsmodus
     description: Schakelt oude legacy SMB protocollen in. NIET aanbevolen!
+  wol:
+    name: Wake on LAN
+    description: Wakes up the host system before the backup. The host MAC must be specified for this
   skip_precheck:
     name: Skip precheck
     description: Start de addon zonder enige controle of de share correct is ingesteld.

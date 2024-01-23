@@ -91,3 +91,76 @@ function is-extended-trigger {
 
     return 1
 }
+
+
+# ------------------------------------------------------------------------------
+# Wake host with WOL
+#
+# Arguments
+#  $1 Host mac address
+# ------------------------------------------------------------------------------
+function wake-host {
+    local host_mac=${1}
+    bashio::log.info $(awake "$host_mac")    
+}
+
+# ------------------------------------------------------------------------------
+# Check if host is online
+#
+# Arguments
+#  $1 Host
+#
+# Returns 0 if host is online
+# Returns 1 if host is offline
+# Returns 2 if host is unkown
+# ------------------------------------------------------------------------------
+function is-host-online {
+    local host=${1}
+    local timeout_seconds=1
+
+    ping_output=$(ping -c 1 -W $timeout_seconds "$host" 2>&1)
+    exit_code=$?
+
+    if [[ "$ping_output" == *"ping: bad address"* ]]; then
+        bashio::log.fatal "The provided host '$host' cannot be found. If you've specified a DNS name, please try using an IP address instead."
+        return 2
+    fi       
+
+    return $exit_code
+}
+
+# ------------------------------------------------------------------------------
+# Wait for host to power up
+#
+# Arguments
+#  $1 Host
+#
+# Returns 0 if host come up within 100 tries. 
+# Returns 1 if host didn't come up after 100 tries
+# Returns 2 if host is unkown
+# ------------------------------------------------------------------------------
+function wait-for-host-online {
+    local host=${1}
+    local wait_seconds=1 
+    local max_tries=100
+    local exit_code
+
+    for ((try = 1; try <= max_tries; try++)); do
+        bashio::log.info "Waiting for $host to power up ($try/$max_tries)..."
+        
+        ping_output=$(is-host-online "$host")
+        exit_code=$?
+
+        if [ $exit_code -eq 0 ]; then
+            bashio::log.info "$host is up."
+            return 0
+        elif [ $exit_code -eq 2 ]; then
+            return 2
+        else
+            sleep $wait_seconds
+        fi
+    done
+
+    bashio::log.warning "Timed out waiting for $host to come up."
+    return 1
+}
