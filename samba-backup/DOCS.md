@@ -8,6 +8,10 @@ Create backups and store them on a Samba share.
 
 The hostname/URL of the Samba share.
 
+### Option: `host_mac`
+
+The MAC address of the host. This option should be used in conjunction with the 'wol' option.
+
 ### Option: `share`
 
 The name of the Samba share.
@@ -69,6 +73,10 @@ If specified the backups will be password-protected.
 ### Option: `workgroup`
 
 The workgroup to use for authentication. Only set this option if not using the default workgroup `WORKGROUP`.
+
+### Option: `wol`
+
+Enable this option to wake up the host before copying the backup to the share using Wake-on-LAN (WOL). Also, be sure to specify the 'host_mac' option.
 
 ### Option: `compatibility_mode`
 

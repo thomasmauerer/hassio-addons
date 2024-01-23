@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.3.0
+
+- Add wake on LAN option to wake up the host system before copying the backup
+
 ## 5.2.0
 
 - Add dutch translation

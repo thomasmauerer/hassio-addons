@@ -14,6 +14,7 @@ RUN \
     && chmod a+x /usr/bin/ha \
     && apk add --no-cache \
         samba-client \
+        awake \
     && chmod a+x /run.sh
 
 # Run script
