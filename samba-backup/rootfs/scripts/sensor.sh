@@ -103,6 +103,22 @@ function update-sensor {
             LAST_BACKUP_SUCCESSFUL=false
         fi
 
+        # The following line retrieves and processes the logs from the samba backup addon in Home Assistant.
+        # It removes any ANSI escape codes using 'sed' and extracts logs related to a backup operation using 'awk'.
+        # The logs are stored in the LAST_LOG_MESSAGES variable for further use.
+        
+        # '/Backup running/': This is an AWK pattern that looks for lines containing "Backup running".
+        # When found, the associated action block is executed.
+        
+        # '{data=""; found=1}': Action block for lines containing "Backup running".
+        # It initializes the variable 'data' as an empty string and sets 'found' to 1 to mark the start of capturing log messages.
+        
+        # 'found{data = data $0 RS}': Action block for lines after "Backup running" has been found.
+        # It appends the current line ('$0') and the record separator ('RS', representing newline) to 'data'.
+        # This accumulates log messages related to the ongoing backup operation.
+        
+        # 'END{printf "%s", data}': Action block executed at the end of processing all input lines.
+        # It uses 'printf' to print the accumulated 'data' variable, ensuring only the backup-related log messages are captured.
         LAST_LOG_MESSAGES=$(echo -e "$(ha addons logs self | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g')" | awk '/Backup running/{data=""; found=1} found{data = data $0 RS} END{printf "%s", data}')
     fi
 
