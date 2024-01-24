@@ -13,7 +13,7 @@ declare BACKUPS_REMOTE="0"
 declare TOTAL_SUCCESS="0"
 declare TOTAL_FAIL="0"
 declare LAST_BACKUP="never"
-declare LAST_BACKUP_SUCCESSFUL="false"
+declare LAST_BACKUP_SUCCESSFUL=false
 declare LAST_LOG_MESSAGES=""
 
 
@@ -113,7 +113,7 @@ function update-sensor {
     --arg ts "$TOTAL_SUCCESS" \
     --arg tf "$TOTAL_FAIL" \
     --arg lb "$LAST_BACKUP" \
-    --arg lbs "$LAST_BACKUP_SUCCESSFUL" \
+    --argjson lbs "$LAST_BACKUP_SUCCESSFUL" \
     --arg llm "$LAST_LOG_MESSAGES" \
     '{
         "state": $s,
