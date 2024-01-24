@@ -14,6 +14,7 @@ declare TOTAL_SUCCESS="0"
 declare TOTAL_FAIL="0"
 declare LAST_BACKUP="never"
 declare LAST_BACKUP_SUCCESSFUL="false"
+declare LAST_LOG_MESSAGES=""
 
 
 # ------------------------------------------------------------------------------
@@ -49,12 +50,17 @@ function get-sensor {
         if result=$(echo "$storage" | jq -r ".attributes.last_backup_successful" 2>/dev/null); then
             [[ "$result" != null ]] && LAST_BACKUP_SUCCESSFUL="$result"
         fi
+
+        if result=$(echo "$storage" | jq -r ".attributes.last_log_messages" 2>/dev/null); then
+            [[ "$result" != null ]] && LAST_LOG_MESSAGES="$result"
+        fi
     fi
 
     bashio::log.debug "Backups local/remote: ${BACKUPS_LOCAL}/${BACKUPS_REMOTE}"
     bashio::log.debug "Total backups succeeded/failed: ${TOTAL_SUCCESS}/${TOTAL_FAIL}"
     bashio::log.debug "Last backup: ${LAST_BACKUP}"
     bashio::log.debug "Last backup successful: ${LAST_BACKUP_SUCCESSFUL}"
+    bashio::log.debug "Last log messages: ${LAST_LOG_MESSAGES}"
 
     return 0
 }
@@ -96,6 +102,8 @@ function update-sensor {
             TOTAL_FAIL=$((TOTAL_FAIL + 1))
             LAST_BACKUP_SUCCESSFUL=false
         fi
+
+        LAST_LOG_MESSAGES=$(echo -e "$(ha addons logs self | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g')" | awk '/Backup running/{data=""; found=1} found{data = data $0 RS} END{printf "%s", data}')
     fi
 
     data=$(jq -n \
@@ -106,6 +114,7 @@ function update-sensor {
     --arg tf "$TOTAL_FAIL" \
     --arg lb "$LAST_BACKUP" \
     --arg lbs "$LAST_BACKUP_SUCCESSFUL" \
+    --arg llm "$LAST_LOG_MESSAGES" \
     '{
         "state": $s,
         "attributes": {
@@ -115,7 +124,8 @@ function update-sensor {
             "total_backups_succeeded": $ts,
             "total_backups_failed": $tf,
             "last_backup": $lb,
-            "last_backup_successful": $lbs
+            "last_backup_successful": $lbs,
+            "last_log_messages": $llm
         }
     }')
 

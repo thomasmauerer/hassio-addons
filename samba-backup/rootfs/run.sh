@@ -26,8 +26,8 @@ function run-backup {
             || update-sensor "${SAMBA_STATUS[3]}" "ALL"
 
         sleep 10
-        update-sensor "${SAMBA_STATUS[0]}"
         bashio::log.info "Backup finished"
+        update-sensor "${SAMBA_STATUS[0]}"
     ) 200>/tmp/samba_backup.lockfile
 }
 
