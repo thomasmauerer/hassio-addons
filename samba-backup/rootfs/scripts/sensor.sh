@@ -4,7 +4,7 @@
 declare SAMBA_STATUS=(IDLE RUNNING SUCCEEDED FAILED)
 declare SENSOR_NAME="sensor.samba_backup"
 declare SENSOR_URL="/core/api/states/${SENSOR_NAME}"
-declare STORAGE_FILE="/backup/.samba_backup.sensor"
+declare STORAGE_FILE="/config/.samba_backup.sensor"
 
 declare CURRENT_STATUS
 
@@ -13,6 +13,8 @@ declare BACKUPS_REMOTE="0"
 declare TOTAL_SUCCESS="0"
 declare TOTAL_FAIL="0"
 declare LAST_BACKUP="never"
+declare LAST_BACKUP_SUCCESSFUL=false
+declare LAST_LOG_MESSAGES=""
 
 
 # ------------------------------------------------------------------------------
@@ -44,11 +46,21 @@ function get-sensor {
         if result=$(echo "$storage" | jq -r ".attributes.last_backup" 2>/dev/null); then
             [[ "$result" != null ]] && LAST_BACKUP="$result"
         fi
+
+        if result=$(echo "$storage" | jq -r ".attributes.last_backup_successful" 2>/dev/null); then
+            [[ "$result" != null ]] && LAST_BACKUP_SUCCESSFUL="$result"
+        fi
+
+        if result=$(echo "$storage" | jq -r ".attributes.last_log_messages" 2>/dev/null); then
+            [[ "$result" != null ]] && LAST_LOG_MESSAGES="$result"
+        fi
     fi
 
     bashio::log.debug "Backups local/remote: ${BACKUPS_LOCAL}/${BACKUPS_REMOTE}"
     bashio::log.debug "Total backups succeeded/failed: ${TOTAL_SUCCESS}/${TOTAL_FAIL}"
     bashio::log.debug "Last backup: ${LAST_BACKUP}"
+    bashio::log.debug "Last backup successful: ${LAST_BACKUP_SUCCESSFUL}"
+    bashio::log.debug "Last log messages: ${LAST_LOG_MESSAGES}"
 
     return 0
 }
@@ -85,9 +97,29 @@ function update-sensor {
         if [ "$CURRENT_STATUS" = "${SAMBA_STATUS[2]}" ]; then
             TOTAL_SUCCESS=$((TOTAL_SUCCESS + 1))
             LAST_BACKUP=$(date +'%Y-%m-%d %H:%M')
+            LAST_BACKUP_SUCCESSFUL=true
         elif [ "$CURRENT_STATUS" = "${SAMBA_STATUS[3]}" ]; then
             TOTAL_FAIL=$((TOTAL_FAIL + 1))
+            LAST_BACKUP_SUCCESSFUL=false
         fi
+
+        # The following line retrieves and processes the logs from the samba backup addon in Home Assistant.
+        # It removes any ANSI escape codes using 'sed' and extracts logs related to a backup operation using 'awk'.
+        # The logs are stored in the LAST_LOG_MESSAGES variable for further use.
+        
+        # '/Backup running/': This is an AWK pattern that looks for lines containing "Backup running".
+        # When found, the associated action block is executed.
+        
+        # '{data=""; found=1}': Action block for lines containing "Backup running".
+        # It initializes the variable 'data' as an empty string and sets 'found' to 1 to mark the start of capturing log messages.
+        
+        # 'found{data = data $0 RS}': Action block for lines after "Backup running" has been found.
+        # It appends the current line ('$0') and the record separator ('RS', representing newline) to 'data'.
+        # This accumulates log messages related to the ongoing backup operation.
+        
+        # 'END{printf "%s", data}': Action block executed at the end of processing all input lines.
+        # It uses 'printf' to print the accumulated 'data' variable, ensuring only the backup-related log messages are captured.
+        LAST_LOG_MESSAGES=$(echo -e "$(ha addons logs self | sed 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g')" | awk '/Backup running/{data=""; found=1} found{data = data $0 RS} END{printf "%s", data}')
     fi
 
     data=$(jq -n \
@@ -97,6 +129,8 @@ function update-sensor {
     --arg ts "$TOTAL_SUCCESS" \
     --arg tf "$TOTAL_FAIL" \
     --arg lb "$LAST_BACKUP" \
+    --argjson lbs "$LAST_BACKUP_SUCCESSFUL" \
+    --arg llm "$LAST_LOG_MESSAGES" \
     '{
         "state": $s,
         "attributes": {
@@ -105,7 +139,9 @@ function update-sensor {
             "backups_remote": $br,
             "total_backups_succeeded": $ts,
             "total_backups_failed": $tf,
-            "last_backup": $lb
+            "last_backup": $lb,
+            "last_backup_successful": $lbs,
+            "last_log_messages": $llm
         }
     }')
 

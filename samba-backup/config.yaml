@@ -17,6 +17,7 @@ hassio_api: true
 hassio_role: manager
 stdin: true
 map:
+  - addon_config:rw
   - backup:rw
 image: thomasmauerer/samba-backup-{arch}
 init: false
